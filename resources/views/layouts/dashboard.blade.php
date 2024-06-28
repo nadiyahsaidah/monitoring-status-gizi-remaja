@@ -119,138 +119,59 @@
                     </div>
                 </form>
                 <ul class="navbar-nav navbar-right">
-                    <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-                            class="nav-link nav-link-lg message-toggle beep"><i class="far fa-envelope"></i></a>
+
+                    @php
+                        $notifications = auth()->user()->unreadNotifications;
+                    @endphp
+                    <li class="dropdown dropdown-list-toggle">
+                        <a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle">
+                            <i class="far fa-envelope"></i>
+                            @if (auth()->user()->unreadNotifications->count())
+                                <span
+                                    class="badge badge-pill badge-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
+                            @endif
+                        </a>
                         <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                            <div class="dropdown-header">Messages
+                            <div class="dropdown-header">Konsultasi
                                 <div class="float-right">
-                                    <a href="#">Mark All As Read</a>
+                                    <a href="{{ route('markAsRead') }}">Tandai sudah dibaca</a>
                                 </div>
                             </div>
                             <div class="dropdown-list-content dropdown-list-message">
-                                <a href="#" class="dropdown-item dropdown-item-unread">
-                                    <div class="dropdown-item-avatar">
-                                        <img alt="image" src="{{ asset('assets') }}/img/avatar/avatar-1.png"
-                                            class="rounded-circle">
-                                        <div class="is-online"></div>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Kusnaedi</b>
-                                        <p>Hello, Bro!</p>
-                                        <div class="time">10 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item dropdown-item-unread">
-                                    <div class="dropdown-item-avatar">
-                                        <img alt="image" src="{{ asset('assets') }}/img/avatar/avatar-2.png"
-                                            class="rounded-circle">
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Dedik Sugiharto</b>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit</p>
-                                        <div class="time">12 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item dropdown-item-unread">
-                                    <div class="dropdown-item-avatar">
-                                        <img alt="image" src="{{ asset('assets') }}/img/avatar/avatar-3.png"
-                                            class="rounded-circle">
-                                        <div class="is-online"></div>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Agung Ardiansyah</b>
-                                        <p>Sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                        <div class="time">12 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-avatar">
-                                        <img alt="image" src="{{ asset('assets') }}/img/avatar/avatar-4.png"
-                                            class="rounded-circle">
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Ardian Rahardiansyah</b>
-                                        <p>Duis aute irure dolor in reprehenderit in voluptate velit ess</p>
-                                        <div class="time">16 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-avatar">
-                                        <img alt="image" src="{{ asset('assets') }}/img/avatar/avatar-5.png"
-                                            class="rounded-circle">
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Alfa Zulkarnain</b>
-                                        <p>Exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-                                        <div class="time">Yesterday</div>
-                                    </div>
-                                </a>
+                                @foreach ($notifications as $notification)
+                                    <a href="{{ route('konsultasi.index') }}"
+                                        class="dropdown-item dropdown-item-unread">
+                                        <div class="dropdown-item-avatar">
+                                            <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}"
+                                                class="rounded-circle">
+                                            <div class="is-online"></div>
+                                        </div>
+                                        <div class="dropdown-item-desc">
+                                            @if (Auth::user()->role == 'remaja')
+                                                <b>Halo {{ $notification->data['remaja_nama'] }}, Anda Telah Menerima
+                                                    Balasan dari Petugas</b>
+                                                <b>Untuk Konsultasi dengan Perihal:
+                                                    {{ $notification->data['perihal'] }}</b>
+                                                <p>Balasan: {{ Str::limit($notification->data['deskripsi'], 50) }}</p>
+                                            @else
+                                            <b>Notifikasi Baru!</b>
+                                            <p><b>{{ $notification->data['remaja_nama'] }}</b> - <b>{{ $notification->data['perihal'] }}</b></p>
+                                            <p>{{ Str::limit($notification->data['deskripsi'], 50) }}</p>
+                                            @endif
+                                            <div class="time">{{ $notification->created_at->diffForHumans() }}</div>
+                                        </div>
+
+                                    </a>
+                                @endforeach
                             </div>
                             <div class="dropdown-footer text-center">
-                                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                                <a href="{{ route('konsultasi.index') }}">View All <i
+                                        class="fas fa-chevron-right"></i></a>
                             </div>
                         </div>
                     </li>
-                    <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-                            class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
-                        <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                            <div class="dropdown-header">Notifications
-                                <div class="float-right">
-                                    <a href="#">Mark All As Read</a>
-                                </div>
-                            </div>
-                            <div class="dropdown-list-content dropdown-list-icons">
-                                <a href="#" class="dropdown-item dropdown-item-unread">
-                                    <div class="dropdown-item-icon bg-primary text-white">
-                                        <i class="fas fa-code"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        Template update is available now!
-                                        <div class="time text-primary">2 Min Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-info text-white">
-                                        <i class="far fa-user"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>You</b> and <b>Dedik Sugiharto</b> are now friends
-                                        <div class="time">10 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        <b>Kusnaedi</b> has moved task <b>Fix bug header</b> to <b>Done</b>
-                                        <div class="time">12 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-danger text-white">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        Low disk space. Let's clean it!
-                                        <div class="time">17 Hours Ago</div>
-                                    </div>
-                                </a>
-                                <a href="#" class="dropdown-item">
-                                    <div class="dropdown-item-icon bg-info text-white">
-                                        <i class="fas fa-bell"></i>
-                                    </div>
-                                    <div class="dropdown-item-desc">
-                                        Welcome to Stisla template!
-                                        <div class="time">Yesterday</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="dropdown-footer text-center">
-                                <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                            </div>
-                        </div>
-                    </li>
+
+
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle nav-link-lg nav-link-user"
                             data-toggle="dropdown">
@@ -290,35 +211,39 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                       @if (Auth::user()->role != 'remaja')
-                       <li class="menu-header">Data Master</li>
-                        
-                       <li class="{{ request()->is('remaja') ? 'active' : '' }}">
-                           <a href="{{ route('remaja.index') }}" class="nav-link active">
-                               <i class="bi bi-people-fill"></i>
-                               <span>Remaja</span>
-                           </a>
-                       </li>
-                       <li class="{{ request()->is('petugas') ? 'active' : '' }}">
-                           <a href="{{ route('petugas.index') }}" class="nav-link active">
-                               <i class="bi bi-person-badge-fill"></i>
-                               <span>Petugas</span>
-                           </a>
-                       </li>
-                       <li class="{{ request()->is('pengukuran') ? 'active' : '' }}">
-                           <a href="{{ route('pengukuran.index') }}" class="nav-link active">
-                               <i class="bi bi-rulers"></i>
-                               <span>Pengukuran</span>
-                           </a>
-                       </li>
+                        @if (Auth::user()->role != 'remaja')
+                            <li class="menu-header">Data Master</li>
 
-                       <li class="{{ request()->is('users') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}" class="nav-link active">
-                            <i class="bi bi-person-fill"></i> 
-                            <span>Admin</span>
-                        </a>
-                    </li>
-                       @endif
+                            <li class="{{ request()->is('remaja') ? 'active' : '' }}">
+                                <a href="{{ route('remaja.index') }}" class="nav-link active">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Remaja</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->is('petugas') ? 'active' : '' }}">
+                                <a href="{{ route('petugas.index') }}" class="nav-link active">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                    <span>Petugas</span>
+                                </a>
+                            </li>
+                            <li class="{{ request()->is('pengukuran') ? 'active' : '' }}">
+                                <a href="{{ route('pengukuran.index') }}" class="nav-link active">
+                                    <i class="bi bi-rulers"></i>
+                                    <span>Pengukuran</span>
+                                </a>
+                            </li>
+
+                           
+                        @endif
+
+                        @if (Auth::user()->role == 'admin')
+                        <li class="{{ request()->is('users') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}" class="nav-link active">
+                                <i class="bi bi-person-fill"></i>
+                                <span>Admin</span>
+                            </a>
+                        </li>
+                        @endif
                         <li class="{{ request()->is('konsultasi') ? 'active' : '' }}">
                             <a href="{{ route('konsultasi.index') }}" class="nav-link active">
                                 <i class="bi bi-chat-dots-fill"></i>
@@ -331,9 +256,9 @@
                                 <span>Artikel</span>
                             </a>
                         </li>
-                       
-                        
-                       
+
+
+
             </div>
 
             </aside>
@@ -345,7 +270,7 @@
                 <div class="section-header">
                     <h1>@yield('judul')</h1>
                 </div>
-                
+
             </section>
             @yield('content')
         </div>
@@ -414,14 +339,19 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if ($errors->any())
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: '{{ $errors->first("error") }}'
-        });
-    </script>
-@endif
+        <script>
+            let errorMessages = '';
+            @foreach ($errors->all() as $error)
+                errorMessages += "{{ $error }}\n";
+            @endforeach
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: errorMessages,
+            });
+        </script>
+    @endif
 
     @if (session('success') || session('error'))
         <script>
@@ -449,7 +379,7 @@
     @endif
     @yield('scripts')
 
-   
+
 
 </body>
 

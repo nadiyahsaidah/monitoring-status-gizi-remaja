@@ -60,42 +60,31 @@
                                                         onclick="deleteConfirmation({{ $konsultasi->id }})">Hapus</button>
                                                 </form>
                                             </div>
-                                            <div class="modal fade" id="editModal{{ $konsultasi->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="editModalLabel{{ $konsultasi->id }}"
-                                                aria-hidden="true">
+                                            <div class="modal fade" id="editModal{{ $konsultasi->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $konsultasi->id }}" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
-                                                        <form action="{{ route('konsultasi.update', $konsultasi->id) }}"
-                                                            method="POST">
+                                                        <form action="{{ route('konsultasi.update', $konsultasi->id) }}" method="POST">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="editModalLabel{{ $konsultasi->id }}">Edit
-                                                                    Konsultasi</h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                    aria-label="Close">
+                                                                <h5 class="modal-title" id="editModalLabel{{ $konsultasi->id }}">Edit Konsultasi</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="form-group">
                                                                     <label for="remaja_id">Nama Remaja</label>
-                                                                    <select class="form-control" id="remaja_id"
-                                                                        name="remaja_id" required readonly>
+                                                                    <select class="form-control" id="remaja_id" name="remaja_id" required readonly>
                                                                         @foreach ($remajas as $remaja)
-                                                                            <option value="{{ $remaja->id }}"
-                                                                                @if ($remaja->id == $konsultasi->remaja_id) selected @endif>
+                                                                            <option value="{{ $remaja->id }}" @if ($remaja->id == $konsultasi->remaja_id) selected @endif>
                                                                                 {{ $remaja->user->nama }}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="perihal">Perihal</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="perihal" name="perihal"
-                                                                        value="{{ $konsultasi->perihal }}" required
-                                                                        readonly>
+                                                                    <input type="text" class="form-control" id="perihal" name="perihal" value="{{ $konsultasi->perihal }}" required readonly>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="deskripsi">Deskripsi</label>
@@ -106,17 +95,15 @@
                                                                     <textarea class="form-control" id="balasan" name="balasan" rows="3">{{ $konsultasi->balasan }}</textarea>
                                                                 </div>
                                                             </div>
-
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-dismiss="modal">Tutup</button>
-                                                                <button type="submit" class="btn btn-primary">Simpan
-                                                                    Perubahan</button>
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                                             </div>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
 
                                         </td>
 
@@ -133,40 +120,41 @@
 
     <!-- Modal Tambah Konsultasi -->
     <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="{{ route('konsultasi.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="tambahModalLabel">Tambah Konsultasi</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('konsultasi.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tambahModalLabel">Tambah Konsultasi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="remaja_id">Nama Remaja</label>
+                        <input type="text" class="form-control" id="remaja_nama" value="{{ Auth::user()->nama }}" readonly>
+                        <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ Auth::user()->id }}" readonly>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="remaja_id">Nama Remaja</label>
-                            <input type="text" class="form-control" id="remaja_id"value="{{ Auth::user()->nama }}" readonly required>
-                            <input type="hidden" class="form-control" id="remaja_id" name="remaja_id" value="{{ Auth::user()->id }}" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label for="perihal">Perihal</label>
-                            <input type="text" class="form-control" id="perihal" name="perihal" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="deskripsi">Deskripsi</label>
-                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
-                        </div>
+                    <div class="form-group">
+                        <label for="perihal">Perihal</label>
+                        <input type="text" class="form-control" id="perihal" name="perihal" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    <div class="form-group">
+                        <label for="deskripsi">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
 @endsection
 
 @section('scripts')

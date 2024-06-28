@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KonsultasiController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PengukuranController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RemajaController;
@@ -36,4 +37,4 @@ Route::resource('users', UserController::class);
 Route::get('/fetch-remaja-data/{id}', [RemajaController::class, 'fetchData']);
 Route::get('/home', [DashboardController::class, 'index'])->name('home');
 Route::post('/pengukuran/hitung', [PengukuranController::class, 'hitungStatusGizi'])->name('pengukuran.hitung');
-
+Route::get('/markAsRead', [NotificationController::class, 'markAsRead'])->name('markAsRead');

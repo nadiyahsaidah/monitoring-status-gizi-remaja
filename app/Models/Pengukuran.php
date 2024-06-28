@@ -25,4 +25,8 @@ class Pengukuran extends Model
     {
         return $this->belongsTo(Remaja::class);
     }
+
+    
+    
+    
 }

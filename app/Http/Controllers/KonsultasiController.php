@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Konsultasi;
 use App\Models\Remaja;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Notifications\KonsultasiAdded;
+use App\Notifications\KonsultasiReply;
 
 class KonsultasiController extends Controller
 {
@@ -25,21 +28,37 @@ class KonsultasiController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $userId = $request->input('remaja_id');
-        $remajaId = Remaja::where('user_id', $userId)->first()->id;
+{
+    try {
+        $userId = $request->input('user_id');
+        $remaja = Remaja::where('user_id', $userId)->first();
+
+        if (!$remaja) {
+            return redirect()->back()->with('error', 'Remaja tidak ditemukan.');
+        }
+
         $validatedData = $request->validate([
-            'remaja_id' => 'required|exists:remaja,id',
+            'user_id' => 'required|exists:remaja,user_id',
             'perihal' => 'required|string|max:255',
             'deskripsi' => 'required|string',
         ]);
 
-        $validatedData['remaja_id'] = $remajaId;
+        $validatedData['remaja_id'] = $remaja->id;
+        unset($validatedData['user_id']);
 
-        Konsultasi::create($validatedData);
+        $konsultasi = Konsultasi::create($validatedData);
+
+        $adminsAndPetugas = User::whereIn('role', ['admin', 'petugas'])->get();
+
+foreach ($adminsAndPetugas as $user) {
+    $user->notify(new KonsultasiAdded($konsultasi));
+}
 
         return redirect()->route('konsultasi.index')->with('success', 'Konsultasi berhasil ditambahkan.');
+    } catch (\Exception $e) {
+        return redirect()->back()->withInput()->with('error', 'Gagal menambahkan konsultasi: ' . $e->getMessage());
     }
+}
 
     public function edit($id)
     {
@@ -51,20 +70,26 @@ class KonsultasiController extends Controller
 
     public function update(Request $request, $id)
 {
-    $validatedData = $request->validate([
-        'remaja_id' => 'required|exists:remaja,id',
-        'balasan' => 'nullable|string',
-    ]);
+    try {
+        $validatedData = $request->validate([
+            'balasan' => 'required|string',
+        ]);
 
-    $konsultasi = Konsultasi::findOrFail($id);
+        $konsultasi = Konsultasi::findOrFail($id);
+        $konsultasi->balasan = $validatedData['balasan'];
+        $konsultasi->status = 'Sudah dibalas';
+        $konsultasi->save();
 
-    $konsultasi->update([
-        'remaja_id' => $validatedData['remaja_id'],
-        'status' => 'Sudah dibalas',
-        'balasan' => $validatedData['balasan'],
-    ]);
+        // Kirim notifikasi ke remaja
+        $remaja = $konsultasi->remaja;
+        if ($remaja) {
+            $remaja->user->notify(new KonsultasiReply($konsultasi));
+        }
 
-    return redirect()->route('konsultasi.index')->with('success', 'Konsultasi berhasil diperbarui.');
+        return redirect()->route('konsultasi.index')->with('success', 'Balasan konsultasi berhasil ditambahkan.');
+    } catch (\Exception $e) {
+        return redirect()->back()->withInput()->with('error', 'Gagal menambahkan balasan: ' . $e->getMessage());
+    }
 }
 
 

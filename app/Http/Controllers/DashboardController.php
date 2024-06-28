@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengukuran;
+use App\Models\Remaja;
 use App\Models\User;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -16,9 +18,17 @@ class DashboardController extends Controller
     }
     public function index()
     {
+        $user = Auth::user();
         $adminCount = User::where('role', 'admin')->count();
         $remajaCount = User::where('role', 'remaja')->count();
         $petugasCount = User::where('role', 'petugas')->count();
+
+        if ($user->role == 'remaja') {
+            $remajaId = Remaja::where('user_id', $user->id)->first()->id;
+            $pengukuranRemaja = Pengukuran::where('remaja_id', $remajaId)->get();
+            return view('home', compact('pengukuranRemaja'));
+        }
+
         $pengukurans = Pengukuran::selectRaw('DATE(tanggal_pengukuran) as date, status_gizi, COUNT(*) as count')
         ->groupBy('date', 'status_gizi')
         ->orderBy('date', 'desc')

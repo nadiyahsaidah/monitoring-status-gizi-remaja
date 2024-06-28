@@ -7,11 +7,12 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <!-- Button trigger modal for Add Petugas -->
-                    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                        data-bs-target="#modalAddPetugas">
-                        Tambah
-                    </button>
+                   @if (auth()->user()->role == 'admin')
+                   <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                   data-bs-target="#modalAddPetugas">
+                   Tambah
+               </button>
+                   @endif
                     <div class="table-responsive">
                         <table class="table table-striped" id="datatable">
                             <thead>
@@ -26,7 +27,9 @@
                                     <th>Tanggal Lahir</th>
                                     <th>Jabatan</th>
                                     <th>Alamat</th>
-                                    <th>Action</th>
+                                    @if (auth()->user()->role == 'admin')
+                                    <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,6 +45,7 @@
                                         <td>{{ $petugas->tanggal_lahir }}</td>
                                         <td>{{ $petugas->jabatan }}</td>
                                         <td>{{ $petugas->alamat }}</td>
+                                        @if (auth()->user()->role == 'admin')
                                         <td>
                                             <div class="d-flex">
                                                 <!-- Button trigger modal for Edit Petugas -->
@@ -58,6 +62,7 @@
                                                 </form>
                                             </div>
                                         </td>
+                                        @endif
                                     </tr>
 
                                     <!-- Modal for Edit Petugas -->

@@ -8,9 +8,11 @@
         <div class="card">
             <div class="card-body">
                 <!-- Button trigger modal for Add Remaja -->
-                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAddRemaja">
-                    Tambah
-                </button>
+               @if (auth()->user()->role == 'admin')
+               <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAddRemaja">
+                Tambah
+            </button>
+               @endif
                 <div class="table-responsive">
                     <table class="table table-striped" id="datatable">
                         <thead>
@@ -23,7 +25,9 @@
                                 <th>Tanggal Lahir</th>
                                 <th>No Hp</th>
                                 <th>Alamat</th>
+                                @if (auth()->user()->role == 'admin')
                                 <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -37,20 +41,22 @@
                                 <td>{{ $remaja->tanggal_lahir }}</td>
                                 <td>{{ $remaja->no_hp }}</td>
                                 <td>{{ $remaja->alamat }}</td>
-                                <td>
-                                    <div class="d-flex">
-                                        <!-- Button trigger modal for Edit Remaja -->
-                                        <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#modalEditRemaja{{ $remaja->id }}">
-                                            Edit
-                                        </button>
-                                        <form action="{{ route('remaja.destroy', $remaja->id) }}" method="POST" class="delete-form">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                        
-                                    </div>
-                                </td>
+                               @if (auth()->user()->role == 'admin')
+                               <td>
+                                <div class="d-flex">
+                                    <!-- Button trigger modal for Edit Remaja -->
+                                    <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#modalEditRemaja{{ $remaja->id }}">
+                                        Edit
+                                    </button>
+                                    <form action="{{ route('remaja.destroy', $remaja->id) }}" method="POST" class="delete-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                    
+                                </div>
+                            </td>
+                               @endif
                             </tr>
 
                             <!-- Modal for Edit Remaja -->
