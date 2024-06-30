@@ -20,16 +20,14 @@
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary mt-4">Filter</button>
                         </div>
-                        <div class="col-md-2">
-                        <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4">Cetak PDF</a>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
-                        </div>
                     </div>
                 </form>
                 
-                <a class="btn btn-primary mb-3" href="{{ route('pengukuran.create') }}">Tambah</a>
+               <div class="d-flex mb-3">
+                <a class="btn btn-primary mt-4 me-2" href="{{ route('pengukuran.create') }}">Tambah</a>
+                <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4 mx-2">Cetak PDF</a>
+                <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
+               </div>
                 <div class="table-responsive">
                     <table class="table-striped table" id="datatable">
                     <thead>
@@ -69,10 +67,10 @@
                                 <td>
                                     <div class="d-flex">
                                         <a href="{{ route('pengukuran.edit', $pengukuran->id) }}" class="btn btn-warning mx-2">Edit</a>
-                                        <form action="{{ route('pengukuran.destroy', $pengukuran->id) }}" method="POST" style="display: inline;">
+                                        <form action="{{ route('pengukuran.destroy', $pengukuran->id) }}" method="POST" style="display: inline;" id="deleteForm">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            <button type="submit" class="btn btn-danger"  onclick="deleteConfirmation({{ $pengukuran->id }})">Delete</button>
                                         </form>
                                     </div>
                                 </td>
@@ -85,5 +83,25 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    function deleteConfirmation(id) {
+        Swal.fire({
+            title: 'Anda yakin?',
+            text: "Anda tidak akan dapat mengembalikan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('deleteForm' + id).submit();
+            }
+        });
+    }
+</script>
 @endsection
 

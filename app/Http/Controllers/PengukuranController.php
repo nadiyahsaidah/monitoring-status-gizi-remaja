@@ -262,8 +262,14 @@ class PengukuranController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            $pengukuran = Pengukuran::findOrFail($id);
+            $pengukuran->delete();
+            return redirect()->route('pengukuran.index')->with('success', 'Data pengukuran berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengukuran.index')->with('error', 'Gagal menghapus data pengukuran: ' . $e->getMessage());
+        }
     }
 }
