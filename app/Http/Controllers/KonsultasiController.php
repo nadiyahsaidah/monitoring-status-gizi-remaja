@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\KonsultasiAdded;
 use App\Notifications\KonsultasiReply;
+use Illuminate\Support\Facades\Auth;
 
 class KonsultasiController extends Controller
 {
@@ -16,6 +17,14 @@ class KonsultasiController extends Controller
      */
     public function index()
     {
+       if(Auth::user()->role == 'remaja'){
+        $user = Auth::user();
+        $remajaId = $user->remaja->first()->id;
+        $remajas = Remaja::where('id', $remajaId)->with('user')->get();
+        $konsultasis = Konsultasi::where('remaja_id', $remajaId)->get();
+        return view('admin.konsultasi.index', compact('konsultasis', 'remajas'));
+       }
+
         $konsultasis = Konsultasi::with('remaja')->get();
         $remajas = Remaja::with('user')->get();
         return view('admin.konsultasi.index', compact('konsultasis', 'remajas'));
