@@ -121,55 +121,55 @@
                 <ul class="navbar-nav navbar-right">
 
                     @php
-                        $notifications = auth()->user()->unreadNotifications;
-                    @endphp
-                    <li class="dropdown dropdown-list-toggle">
-                        <a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle">
-                            <i class="far fa-envelope"></i>
-                            @if (auth()->user()->unreadNotifications->count())
-                                <span
-                                    class="badge badge-pill badge-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
-                            @endif
-                        </a>
-                        <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                            <div class="dropdown-header">Konsultasi
-                                <div class="float-right">
-                                    <a href="{{ route('markAsRead') }}">Tandai sudah dibaca</a>
-                                </div>
-                            </div>
-                            <div class="dropdown-list-content dropdown-list-message">
-                                @foreach ($notifications as $notification)
-                                    <a href="{{ route('konsultasi.index') }}"
-                                        class="dropdown-item dropdown-item-unread">
-                                        <div class="dropdown-item-avatar">
-                                            <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}"
-                                                class="rounded-circle">
-                                            <div class="is-online"></div>
-                                        </div>
-                                        <div class="dropdown-item-desc">
-                                            @if (Auth::user()->role == 'remaja')
-                                                <b>Halo {{ $notification->data['remaja_nama'] }}, Anda Telah Menerima
-                                                    Balasan dari Petugas</b>
-                                                <b>Untuk Konsultasi dengan Perihal:
-                                                    {{ $notification->data['perihal'] }}</b>
-                                                <p>Balasan: {{ Str::limit($notification->data['deskripsi'], 50) }}</p>
-                                            @else
-                                            <b>Notifikasi Baru!</b>
-                                            <p><b>{{ $notification->data['remaja_nama'] }}</b> - <b>{{ $notification->data['perihal'] }}</b></p>
-                                            <p>{{ Str::limit($notification->data['deskripsi'], 50) }}</p>
-                                            @endif
-                                            <div class="time">{{ $notification->created_at->diffForHumans() }}</div>
-                                        </div>
+                    $notifications = auth()->user()->unreadNotifications;
+                @endphp
+               <li class="dropdown dropdown-list-toggle">
+                <a href="#" data-toggle="dropdown" class="nav-link nav-link-lg message-toggle">
+                    <i class="far fa-envelope"></i>
+                    @if (auth()->user()->unreadNotifications->count())
+                        <span class="badge badge-pill badge-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
+                    @endif
+                </a>
+                <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                    <div class="dropdown-header">Konsultasi
+                        <div class="float-right">
+                            <a href="{{ route('markAsRead') }}">Tandai sudah dibaca</a>
 
-                                    </a>
-                                @endforeach
-                            </div>
-                            <div class="dropdown-footer text-center">
-                                <a href="{{ route('konsultasi.index') }}">View All <i
-                                        class="fas fa-chevron-right"></i></a>
-                            </div>
                         </div>
-                    </li>
+                    </div>
+                    <div class="dropdown-list-content dropdown-list-message">
+                        @foreach ($notifications as $notification)
+                            <a href="{{ route('konsultasi.index') }}"
+                                class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-avatar">
+                                    <img alt="image" src="{{ asset('assets/img/avatar/avatar-1.png') }}"
+                                        class="rounded-circle">
+                                    <div class="is-online"></div>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    @if (Auth::user()->role == 'remaja')
+                                        <b>Halo {{ $notification->data['remaja_nama'] }}, Anda Telah Menerima
+                                            Balasan dari Petugas</b>
+                                        <b>Untuk Konsultasi dengan Perihal:
+                                            {{ $notification->data['perihal'] }}</b>
+                                        <p>Balasan: {{ Str::limit($notification->data['deskripsi'], 50) }}</p>
+                                    @else
+                                        <b>Notifikasi Baru!</b>
+                                        <p><b>{{ $notification->data['remaja_nama'] }}</b> - <b>{{ $notification->data['perihal'] }}</b></p>
+                                        <p>{{ Str::limit($notification->data['deskripsi'], 50) }}</p>
+                                    @endif
+                                    <div class="time">{{ $notification->created_at->diffForHumans() }}</div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                    <div class="dropdown-footer text-center">
+                        <a href="{{ route('konsultasi.index') }}">View All <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </li>
+            
+                
 
 
                     <li class="nav-item dropdown">
@@ -299,6 +299,8 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     @yield('scripts')
+
+   
     <!-- General JS Scripts -->>
 
 

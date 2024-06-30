@@ -28,6 +28,7 @@ class KonsultasiReply extends Notification
             'perihal' => $this->konsultasi->perihal,
             'deskripsi' => $this->konsultasi->deskripsi,
             'balasan' => $this->konsultasi->balasan,
+            'konsultasi_id' => $this->konsultasi->id
         ];
     }
 }

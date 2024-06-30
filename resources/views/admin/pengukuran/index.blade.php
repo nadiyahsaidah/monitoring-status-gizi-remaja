@@ -24,7 +24,7 @@
                         <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4">Cetak PDF</a>
                         </div>
                         <div class="col-md-2">
-                            <a href="{{ route('pengukuran.exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
+                            <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
                         </div>
                     </div>
                 </form>

@@ -23,22 +23,24 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Auth::routes();
 
-Route::resource('remaja', RemajaController::class);
-Route::resource('petugas', PetugasController::class);
-Route::resource('pengukuran', PengukuranController::class);
-Route::resource('konsultasi', KonsultasiController::class);
-Route::resource('artikel', ArtikelController::class);
-Route::resource('users', UserController::class);
-Route::get('/fetch-remaja-data/{id}', [RemajaController::class, 'fetchData']);
-Route::get('/home', [DashboardController::class, 'index'])->name('home');
-Route::post('/pengukuran/hitung', [PengukuranController::class, 'hitungStatusGizi'])->name('pengukuran.hitung');
-Route::get('/markAsRead', [NotificationController::class, 'markAsRead'])->name('markAsRead');
-Route::get('/cetak-pdf', [PengukuranController::class, 'cetakPDF'])->name('cetakPDF');
-Route::get('pengukuran/export-excel', [PengukuranController::class, 'exportExcel'])->name('pengukuran.exportExcel');
+Route::middleware('auth')->group(function () {
+    Route::resource('remaja', RemajaController::class);
+    Route::resource('petugas', PetugasController::class);
+    Route::resource('pengukuran', PengukuranController::class);
+    Route::resource('konsultasi', KonsultasiController::class);
+    Route::resource('artikel', ArtikelController::class);
+    Route::resource('users', UserController::class);
+    Route::get('/fetch-remaja-data/{id}', [RemajaController::class, 'fetchData']);
+    Route::get('/home', [DashboardController::class, 'index'])->name('home');
+    Route::post('/pengukuran/hitung', [PengukuranController::class, 'hitungStatusGizi'])->name('pengukuran.hitung');
+    Route::get('/markAsRead', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+    Route::get('/cetak-pdf', [PengukuranController::class, 'cetakPDF'])->name('cetakPDF');
+    Route::get('/export-excel', [PengukuranController::class, 'exportExcel'])->name('exportExcel');
+    Route::get('/notifications/mark-as-read/{id}', [NotificationController::class, 'markNotificationAsRead'])->name('notifications.markAsRead');
 
-
+});

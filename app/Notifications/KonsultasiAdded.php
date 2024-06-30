@@ -28,6 +28,7 @@ class KonsultasiAdded extends Notification
             'remaja_nama' => $this->konsultasi->remaja->user->nama,
             'perihal' => $this->konsultasi->perihal,
             'deskripsi' => $this->konsultasi->deskripsi,
+            'konsultasi_id' => $this->konsultasi->id,  
         ];
     }
 }
