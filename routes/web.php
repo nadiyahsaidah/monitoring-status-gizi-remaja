@@ -38,3 +38,7 @@ Route::get('/fetch-remaja-data/{id}', [RemajaController::class, 'fetchData']);
 Route::get('/home', [DashboardController::class, 'index'])->name('home');
 Route::post('/pengukuran/hitung', [PengukuranController::class, 'hitungStatusGizi'])->name('pengukuran.hitung');
 Route::get('/markAsRead', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+Route::get('/cetak-pdf', [PengukuranController::class, 'cetakPDF'])->name('cetakPDF');
+Route::get('pengukuran/export-excel', [PengukuranController::class, 'exportExcel'])->name('pengukuran.exportExcel');
+
+

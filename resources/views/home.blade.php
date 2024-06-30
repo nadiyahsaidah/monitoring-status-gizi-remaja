@@ -66,6 +66,22 @@
     {{ $chart->script() }}
 
     @else
+      <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    {!! $bbChart->container() !!}
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    {!! $tbChart->container() !!}
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12 col-md-6 col-sm-6 col-12">
             <div class="card">
@@ -114,5 +130,10 @@
             </div>
         </div>
     </div>
+  
+
+    <script src="{{ LarapexChart::cdn() }}"></script>
+    {{ $bbChart->script() }}
+    {{ $tbChart->script() }}
     @endif
 @endsection

@@ -7,10 +7,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#tambahModal">
+                   @if(Auth::user()->role == 'remaja')
+                   <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#tambahModal">
                         Tambah Konsultasi
                     </button>
-
+                    @endif
                     <div class="table-responsive">
                         <table class="table-striped table" id="datatable">
                             <thead>
@@ -43,15 +44,20 @@
                                         </td>
                                         <td>{{ $konsultasi->balasan ? $konsultasi->balasan : '-' }} </td>
                                         <td>{{ $konsultasi->created_at }}</td>
-                                        @if (Auth::user()->role != 'remaja')
+                                        
                                         <td>
                                             <div class="d-flex gap-3">
+                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#showModal{{ $konsultasi->id }}">
+                                                    Show
+                                            </button>
+                                        @if (Auth::user()->role != 'remaja')
                                                 @if ($konsultasi->balasan == null)
                                                     <button type="button" class="btn btn-primary " data-toggle="modal"
                                                         data-target="#editModal{{ $konsultasi->id }}">
                                                         Balas
                                                     </button>
                                                 @endif
+                                                
                                                 <form action="{{ route('konsultasi.destroy', $konsultasi->id) }}"
                                                     method="POST" id="deleteForm{{ $konsultasi->id }}">
                                                     @csrf
@@ -103,6 +109,38 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="modal fade" id="showModal{{ $konsultasi->id }}" tabindex="-1" role="dialog" aria-labelledby="showModalLabel{{ $konsultasi->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="showModalLabel{{ $konsultasi->id }}">Detail Konsultasi</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p><strong>Nama Remaja:</strong> {{ $konsultasi->remaja->user->nama }}</p>
+                                                            <p><strong>Perihal:</strong> {{ $konsultasi->perihal }}</p>
+                                                            <p><strong>Deskripsi:</strong></p>
+                                                            <p>{{ $konsultasi->deskripsi }}</p>
+                                                            <p><strong>Status:</strong> 
+                                                                @if ($konsultasi->status == 'Belum dibalas')
+                                                                    <span class="badge bg-warning text-white">{{ $konsultasi->status }}</span>
+                                                                @else
+                                                                    <span class="badge bg-success text-white">{{ $konsultasi->status }}</span>
+                                                                @endif
+                                                            </p>
+                                                            @if ($konsultasi->balasan)
+                                                                <p><strong>Balasan:</strong></p>
+                                                                <p>{{ $konsultasi->balasan }}</p>
+                                                            @endif
+                                                            <p><strong>Tanggal:</strong> {{ $konsultasi->created_at }}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             
 
                                         </td>

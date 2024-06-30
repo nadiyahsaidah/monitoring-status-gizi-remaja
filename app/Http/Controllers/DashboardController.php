@@ -26,7 +26,25 @@ class DashboardController extends Controller
         if ($user->role == 'remaja') {
             $remajaId = Remaja::where('user_id', $user->id)->first()->id;
             $pengukuranRemaja = Pengukuran::where('remaja_id', $remajaId)->get();
-            return view('home', compact('pengukuranRemaja'));
+    
+            // Ambil data tanggal, bb, dan tb
+            $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->toArray();
+            $bb = $pengukuranRemaja->pluck('bb')->toArray();
+            $tb = $pengukuranRemaja->pluck('tb')->toArray();
+    
+            $bbChart = (new LarapexChart)->lineChart()
+            ->setTitle('Perkembangan Berat Badan')
+            ->setXAxis($dates)
+            ->addData('Berat Badan', $bb)
+            ->setColors(['#ff6384']);
+
+            $tbChart = (new LarapexChart)->lineChart()
+            ->setTitle('Perkembangan Tinggi Badan')
+            ->setXAxis($dates)
+            ->addData('Berat Badan', $tb)
+            ->setColors(['#0000ff']);
+    
+            return view('home', compact('tbChart','bbChart', 'pengukuranRemaja'));
         }
 
         $pengukurans = Pengukuran::selectRaw('DATE(tanggal_pengukuran) as date, status_gizi, COUNT(*) as count')
@@ -36,30 +54,32 @@ class DashboardController extends Controller
         ->groupBy('date');
 
     $dates = [];
-    $gemukCounts = [];
-    $kurusCounts = [];
-    $normalCounts = [];
-    $lainnyaCounts = [];
+    $giziBurukCounts = [];
+    $giziKurangCounts = [];
+    $giziBaikCounts = [];
+    $giziLebihCounts = [];
+    $obesitasCounts = [];
 
     foreach ($pengukurans as $date => $statusGroup) {
         $dates[] = $date;
 
-        $gemukCounts[] = $statusGroup->where('status_gizi', 'Obesitas')->first()->count ?? 0;
-        $kurusCounts[] = $statusGroup->where('status_gizi', 'Kurang')->first()->count ?? 0;
-        $normalCounts[] = $statusGroup->where('status_gizi', 'Normal')->first()->count ?? 0;
-        $lainnyaCounts[] = $statusGroup->whereNotIn('status_gizi', ['Obesitas', 'Kurang', 'Normal'])->sum('count');
+        $giziBurukCounts[] = $statusGroup->where('status_gizi', 'Gizi Buruk')->first()->count ?? 0;
+        $giziKurangCounts[] = $statusGroup->where('status_gizi', 'Gizi Kurang')->first()->count ?? 0;
+        $giziBaikCounts[] = $statusGroup->where('status_gizi', 'Gizi Baik')->first()->count ?? 0;
+        $giziLebihCounts[] = $statusGroup->where('status_gizi', 'Gizi Lebih')->first()->count ?? 0;
+        $obesitasCounts[] = $statusGroup->where('status_gizi', 'Obesitas')->first()->count ?? 0;
     }
 
     $chart = (new LarapexChart)->barChart()
         ->setTitle('Status Gizi Per Tanggal')
         ->setXAxis($dates)
-        ->addData('Gemuk', $gemukCounts)
-        ->addData('Kurus', $kurusCounts)
-        ->addData('Normal', $normalCounts)
-        ->addData('Lainnya', $lainnyaCounts)
-        ->setColors(['#ff6384', '#36a2eb', '#cc65fe', '#ffce56']);
+        ->addData('Gizi Buruk', $giziBurukCounts)
+        ->addData('Gizi Kurang', $giziKurangCounts)
+        ->addData('Gizi Baik', $giziBaikCounts)
+        ->addData('Gizi Lebih', $giziLebihCounts)
+        ->addData('Obesitas', $obesitasCounts)
+        ->setColors(['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#ff6384', '#36a2eb']);
 
     return view('home', compact('chart', 'adminCount', 'remajaCount', 'petugasCount'));
-    }
-    
+}
 }

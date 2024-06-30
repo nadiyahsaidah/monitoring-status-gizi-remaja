@@ -7,10 +7,32 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
+                <form action="{{ route('pengukuran.index') }}" method="GET" class="mb-3">
+                    <div class="form-row align-items-center">
+                        <div class="col-md-3">
+                            <label for="start_date">Dari Tanggal:</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request('start_date') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="end_date">Sampai Tanggal:</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request('end_date') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary mt-4">Filter</button>
+                        </div>
+                        <div class="col-md-2">
+                        <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4">Cetak PDF</a>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{ route('pengukuran.exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
+                        </div>
+                    </div>
+                </form>
+                
                 <a class="btn btn-primary mb-3" href="{{ route('pengukuran.create') }}">Tambah</a>
                 <div class="table-responsive">
                     <table class="table-striped table" id="datatable">
-                        <thead>
+                    <thead>
                             <tr>
                                 <th class="text-center">
                                     No
@@ -64,3 +86,4 @@
     </div>
 </div>
 @endsection
+
