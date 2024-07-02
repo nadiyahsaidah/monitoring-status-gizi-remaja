@@ -10,6 +10,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PengukuranController extends Controller
 {
@@ -21,9 +22,21 @@ class PengukuranController extends Controller
         $query = Pengukuran::query();
         if ($request->has('start_date') && $request->has('end_date')) {
             $query->whereBetween('tanggal_pengukuran', [$request->start_date, $request->end_date]);
+
         }
+        if(Auth::user()->role == 'remaja'){
+            $user = Auth::user();
+            $remajaId = Remaja::where('user_id', $user->id)->first()->id;
+            $pengukuranRemaja = Pengukuran::where('remaja_id', $remajaId)->get();
+            return view('admin.pengukuran.index', compact('pengukurans','pengukuranRemaja'));
+        }
+        
         $pengukurans = $query->get();
-        return view('admin.pengukuran.index', compact('pengukurans'));
+
+
+          return view('admin.pengukuran.index', compact('pengukurans'));
+        
+     
     }
 
     public function cetakPDF(Request $request)
@@ -272,4 +285,6 @@ class PengukuranController extends Controller
             return redirect()->route('pengukuran.index')->with('error', 'Gagal menghapus data pengukuran: ' . $e->getMessage());
         }
     }
+
+    
 }

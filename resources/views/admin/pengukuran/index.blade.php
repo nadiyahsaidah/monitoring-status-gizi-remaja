@@ -7,6 +7,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
+            @if (auth()->user()->role == 'admin' || auth()->user()->role == 'petugas')
                 <form action="{{ route('pengukuran.index') }}" method="GET" class="mb-3">
                     <div class="form-row align-items-center">
                         <div class="col-md-3">
@@ -23,24 +24,23 @@
                     </div>
                 </form>
                 
-               <div class="d-flex mb-3">
-                <a class="btn btn-primary mt-4 me-2" href="{{ route('pengukuran.create') }}">Tambah</a>
-                <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4 mx-2">Cetak PDF</a>
-                <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
-               </div>
+                <div class="d-flex mb-3">
+                    <a class="btn btn-primary mt-4 me-2" href="{{ route('pengukuran.create') }}">Tambah</a>
+                    <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4 mx-2">Cetak PDF</a>
+                    <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
+                </div>
+                
                 <div class="table-responsive">
-                    <table class="table-striped table" id="datatable">
-                    <thead>
+                    <table class="table table-striped" id="datatable">
+                        <thead>
                             <tr>
-                                <th class="text-center">
-                                    No
-                                </th>
+                                <th class="text-center">No</th>
                                 <th>Username</th>
                                 <th>Nama</th>
                                 <th>Jenis Kelamin</th>
                                 <th>Tanggal Lahir</th>
                                 <th>Tanggal Pengukuran</th>
-                                <th>Usia </th>
+                                <th>Usia</th>
                                 <th>BB</th>
                                 <th>TB</th>
                                 <th>Status Gizi</th>
@@ -67,10 +67,10 @@
                                 <td>
                                     <div class="d-flex">
                                         <a href="{{ route('pengukuran.edit', $pengukuran->id) }}" class="btn btn-warning mx-2">Edit</a>
-                                        <form action="{{ route('pengukuran.destroy', $pengukuran->id) }}" method="POST" style="display: inline;" id="deleteForm">
+                                        <form id="deleteForm{{ $pengukuran->id }}" action="{{ route('pengukuran.destroy', $pengukuran->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger"  onclick="deleteConfirmation({{ $pengukuran->id }})">Delete</button>
+                                            <button type="submit" class="btn btn-danger" onclick="deleteConfirmation({{ $pengukuran->id }})">Delete</button>
                                         </form>
                                     </div>
                                 </td>
@@ -79,6 +79,38 @@
                         </tbody>
                     </table>
                 </div>
+            @endif
+
+            @if (auth()->user()->role == 'remaja')
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Pengukuran</th>
+                            <th>BB</th>
+                            <th>TB</th>
+                            <th>LILA</th>
+                            <th>Tensi</th>
+                            <th>Status Gizi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($pengukuranRemaja as $item)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_pengukuran)->isoFormat('D MMMM YYYY') }}</td>ppetugs
+                            <td>{{ $item->bb }}</td>
+                            <td>{{ $item->tb }}</td>
+                            <td>{{ $item->lila }}</td>
+                            <td>{{ $item->tensi }}</td>
+                            <td><span class="badge badge-success">{{ $item->status_gizi }}</span></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
             </div>
         </div>
     </div>
@@ -104,4 +136,3 @@
     }
 </script>
 @endsection
-

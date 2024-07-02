@@ -211,6 +211,17 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
+
+                        @if (Auth::user()->role == 'remaja')
+                        <li class="{{ request()->is('pengukuran') ? 'active' : '' }}">
+                                <a href="{{ route('pengukuran.index') }}" class="nav-link active">
+                                    <i class="bi bi-rulers"></i>
+                                    <span>Riwayat Pengukuran</span>
+                                </a>
+                            </li>
+
+                        @endif
+
                         @if (Auth::user()->role != 'remaja')
                             <li class="menu-header">Data Master</li>
 

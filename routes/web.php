@@ -8,6 +8,7 @@ use App\Http\Controllers\PengukuranController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\RemajaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RiwayatController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('konsultasi', KonsultasiController::class);
     Route::resource('artikel', ArtikelController::class);
     Route::resource('users', UserController::class);
+    Route::get('/riwayat-pengukuran', [PengukuranController::class, 'riwayatPengukuran'])->name('riwayat.pengukuran');
     Route::get('/fetch-remaja-data/{id}', [RemajaController::class, 'fetchData']);
     Route::get('/home', [DashboardController::class, 'index'])->name('home');
     Route::post('/pengukuran/hitung', [PengukuranController::class, 'hitungStatusGizi'])->name('pengukuran.hitung');
