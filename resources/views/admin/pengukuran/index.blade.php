@@ -83,7 +83,7 @@
 
             @if (auth()->user()->role == 'remaja')
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered"  id="datatable">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -99,7 +99,7 @@
                         @foreach ($pengukuranRemaja as $item)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->tanggal_pengukuran)->isoFormat('D MMMM YYYY') }}</td>ppetugs
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_pengukuran)->isoFormat('D MMMM YYYY') }}</td>
                             <td>{{ $item->bb }}</td>
                             <td>{{ $item->tb }}</td>
                             <td>{{ $item->lila }}</td>

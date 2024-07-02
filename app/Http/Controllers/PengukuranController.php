@@ -28,6 +28,7 @@ class PengukuranController extends Controller
             $user = Auth::user();
             $remajaId = Remaja::where('user_id', $user->id)->first()->id;
             $pengukuranRemaja = Pengukuran::where('remaja_id', $remajaId)->get();
+            $pengukurans = $query->get();
             return view('admin.pengukuran.index', compact('pengukurans','pengukuranRemaja'));
         }
         
