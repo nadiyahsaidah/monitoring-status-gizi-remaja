@@ -44,5 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/cetak-pdf', [PengukuranController::class, 'cetakPDF'])->name('cetakPDF');
     Route::get('/export-excel', [PengukuranController::class, 'exportExcel'])->name('exportExcel');
     Route::get('/notifications/mark-as-read/{id}', [NotificationController::class, 'markNotificationAsRead'])->name('notifications.markAsRead');
-
+    Route::get('profile', [RemajaController::class, 'profile'])->name('profile');
+    Route::put('/profile/{id}', [RemajaController::class, 'profileUpdate'])->name('profile.update');
 });
