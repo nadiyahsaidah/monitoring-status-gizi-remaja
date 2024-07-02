@@ -257,6 +257,15 @@
                             </a>
                         </li>
 
+                        @if (Auth::user()->role == 'remaja')
+                        <li class="{{ request()->is('profil') ? 'active' : '' }}">
+                            <a href="{{ route('profile') }}" class="nav-link active">
+                                <i class="bi bi-chat-dots-fill"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        @endif
+
 
 
             </div>

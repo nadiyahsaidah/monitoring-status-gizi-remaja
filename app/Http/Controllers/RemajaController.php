@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Remaja;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class RemajaController extends Controller
 {
@@ -18,6 +20,55 @@ class RemajaController extends Controller
         $remajas = Remaja::with('user')->get();
         return view('admin.remaja.index', compact('remajas'));
     }
+    public function profile()
+    {
+        $user = Auth::user();
+        $remaja = Remaja::where('user_id', $user->id)->first(); 
+        return view('admin.remaja.profile', compact('remaja'));
+    }
+
+    public function profileUpdate(Request $request, $id)
+    {
+        // Find the remaja by ID
+        $remaja = Remaja::findOrFail($id);
+        $user = $remaja->user;
+    
+        // Validate the request data
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'nik' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'no_hp' => 'required|string|max:15',
+            'alamat' => 'required|string',
+        ]);
+    
+        // Update the user information
+        $user->nama = $request->nama;
+        $user->username = $request->username;
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
+    
+        // Update the remaja information
+        $remaja->jenis_kelamin = $request->jenis_kelamin;
+        $remaja->nik = $request->nik;
+        $remaja->tempat_lahir = $request->tempat_lahir;
+        $remaja->tanggal_lahir = $request->tanggal_lahir;
+        $remaja->no_hp = $request->no_hp;
+        $remaja->alamat = $request->alamat;
+        $remaja->save();
+    
+        // Redirect back with a success message
+        return redirect()->route('profile')->with('success', 'Data berhasil diperbarui.');
+    }
+
+
+    
 
     /**
      * Show the form for creating a new resource.
