@@ -80,6 +80,8 @@ class DashboardController extends Controller
         ->addData('Obesitas', $obesitasCounts)
         ->setColors(['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#ff6384', '#36a2eb']);
 
-    return view('home', compact('chart', 'adminCount', 'remajaCount', 'petugasCount'));
+        $pengukurans = Pengukuran::all();
+
+    return view('home', compact('chart', 'adminCount', 'remajaCount', 'petugasCount','pengukurans'));
 }
 }

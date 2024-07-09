@@ -21,4 +21,8 @@ class Konsultasi extends Model
     {
         return $this->belongsTo(Remaja::class, 'remaja_id');
     }
+    public function messages()
+    {
+        return $this->hasMany(KonsultasiMessage::class);
+    }
 }

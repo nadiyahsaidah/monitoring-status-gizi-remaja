@@ -26,6 +26,10 @@ class Remaja extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function pengukurans()
+{
+    return $this->hasMany(Pengukuran::class);
+}
 
     public function hitungUsia()
     {

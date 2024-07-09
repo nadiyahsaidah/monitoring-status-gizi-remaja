@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Remaja;
 use App\Models\User;
+use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +17,41 @@ class RemajaController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $remajas = Remaja::with('user')->get();
-        return view('admin.remaja.index', compact('remajas'));
+{
+    $remajas = Remaja::with('user', 'pengukurans')->get();
+    $charts = [];
+
+    foreach ($remajas as $remaja) {
+        $pengukuranRemaja = $remaja->pengukurans;
+        $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->toArray();
+        $bb = $pengukuranRemaja->pluck('bb')->toArray();
+        $tb = $pengukuranRemaja->pluck('tb')->toArray();
+
+        if (count($bb) > 0 && count($tb) > 0) {
+            $bbChart = (new LarapexChart)->lineChart()
+                ->setTitle('Perkembangan Berat Badan')
+                ->setXAxis($dates)
+                ->addData('Berat Badan', $bb)
+                ->setColors(['#ff6384']);
+
+            $tbChart = (new LarapexChart)->lineChart()
+                ->setTitle('Perkembangan Tinggi Badan')
+                ->setXAxis($dates)
+                ->addData('Tinggi Badan', $tb)
+                ->setColors(['#0000ff']);
+        } else {
+            $bbChart = null;
+            $tbChart = null;
+        }
+
+        $charts[$remaja->id] = [
+            'bbChart' => $bbChart,
+            'tbChart' => $tbChart,
+        ];
     }
+
+    return view('admin.remaja.index', compact('remajas', 'charts'));
+}
     public function profile()
     {
         $user = Auth::user();

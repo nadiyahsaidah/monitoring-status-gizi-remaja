@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Konsultasi;
+use App\Models\KonsultasiMessage;
 use App\Models\Remaja;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -105,6 +106,41 @@ class KonsultasiController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal menambahkan balasan: ' . $e->getMessage());
         }
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $konsultasi = Konsultasi::findOrFail($id);
+        $user = Auth::user();
+
+        $message = new KonsultasiMessage();
+        $message->konsultasi_id = $konsultasi->id;
+        $message->user_id = $user->id;
+        $message->message = $request->message;
+        $message->save();
+
+        $konsultasi->status = 'Sudah dibalas';
+        $konsultasi->save();
+
+        if (Auth::user()->role == 'remaja') {
+            $adminsAndPetugas = User::whereIn('role', ['admin', 'petugas'])->get();
+            foreach ($adminsAndPetugas as $user) {
+                $user->notify(new KonsultasiReply($konsultasi));
+            }
+        } else {
+            $konsultasi->remaja->user->notify(new KonsultasiReply($konsultasi));
+        }
+
+         $notification = $user->unreadNotifications->firstWhere('data.konsultasi_id', $konsultasi->id);
+            if ($notification) {
+                $notification->markAsRead();
+            }
+
+        return redirect()->route('konsultasi.index')->with('success', 'Balasan berhasil dikirim.');
     }
 
 

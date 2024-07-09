@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('petugas', PetugasController::class);
     Route::resource('pengukuran', PengukuranController::class);
     Route::resource('konsultasi', KonsultasiController::class);
+    Route::post('konsultasi-messages/{id}/reply', [KonsultasiController::class, 'reply'])->name('konsultasi-messages.reply');
     Route::resource('artikel', ArtikelController::class);
     Route::resource('users', UserController::class);
     Route::get('/riwayat-pengukuran', [PengukuranController::class, 'riwayatPengukuran'])->name('riwayat.pengukuran');

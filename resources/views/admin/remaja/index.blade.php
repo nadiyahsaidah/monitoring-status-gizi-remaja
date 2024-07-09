@@ -8,11 +8,11 @@
         <div class="card">
             <div class="card-body">
                 <!-- Button trigger modal for Add Remaja -->
-               @if (auth()->user()->role == 'admin')
-               <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAddRemaja">
-                Tambah
-            </button>
-               @endif
+                @if (auth()->user()->role == 'admin')
+                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAddRemaja">
+                    Tambah
+                </button>
+                @endif
                 <div class="table-responsive">
                     <table class="table table-striped" id="datatable">
                         <thead>
@@ -31,7 +31,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($remajas as $remaja)
+                            @foreach ($remajas as $remaja)
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $remaja->user->username }}</td>
@@ -41,23 +41,53 @@
                                 <td>{{ $remaja->tanggal_lahir }}</td>
                                 <td>{{ $remaja->no_hp }}</td>
                                 <td>{{ $remaja->alamat }}</td>
-                               @if (auth()->user()->role == 'admin')
-                               <td>
-                                <div class="d-flex">
-                                    <!-- Button trigger modal for Edit Remaja -->
-                                    <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#modalEditRemaja{{ $remaja->id }}">
-                                        Edit
-                                    </button>
-                                    <form action="{{ route('remaja.destroy', $remaja->id) }}" method="POST" class="delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                    </form>
-                                    
-                                </div>
-                            </td>
-                               @endif
+                                @if (auth()->user()->role == 'admin')
+                                <td>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#modalEditRemaja{{ $remaja->id }}">
+                                            Edit
+                                        </button>
+                                        <form action="{{ route('remaja.destroy', $remaja->id) }}" method="POST" class="delete-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#modalPerkembanganRemaja{{ $remaja->id }}">
+                                            Perkembangan
+                                        </button>
+                                    </div>
+                                </td>
+                                @endif
                             </tr>
+
+                            <!-- Modal for Perkembangan Remaja -->
+                            <div class="modal fade" id="modalPerkembanganRemaja{{ $remaja->id }}" tabindex="-1" aria-labelledby="modalPerkembanganRemajaLabel{{ $remaja->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalPerkembanganRemajaLabel{{ $remaja->id }}">Perkembangan Remaja</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            @if ($charts[$remaja->id]['bbChart'] && $charts[$remaja->id]['tbChart'])
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    {!! $charts[$remaja->id]['bbChart']->container() !!}
+                                                </div>
+                                                <div class="col-md-6">
+                                                    {!! $charts[$remaja->id]['tbChart']->container() !!}
+                                                </div>
+                                            </div>
+                                            @else
+                                            <p>Belum ada data pengukuran untuk {{ $remaja->user->nama }}</p>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Modal for Edit Remaja -->
                             <div class="modal fade" id="modalEditRemaja{{ $remaja->id }}" tabindex="-1" aria-labelledby="modalEditRemajaLabel{{ $remaja->id }}" aria-hidden="true">
@@ -81,7 +111,7 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
-                                                    <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
+                                                    <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" required>
                                                         <option value="Laki-laki" {{ $remaja->jenis_kelamin === 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                                                         <option value="Perempuan" {{ $remaja->jenis_kelamin === 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                                                     </select>
@@ -145,7 +175,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
-                        <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
+                        <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" required>
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
                         </select>
@@ -179,28 +209,35 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+@foreach ($charts as $remaja_id => $chart)
+    @if ($chart['bbChart'] && $chart['tbChart'])
+        {!! $chart['bbChart']->script() !!}
+        {!! $chart['tbChart']->script() !!}
+    @endif
+@endforeach
 @endsection
 
-
 @section('scripts')
-    <script>
-        $(document).on('click', 'form.delete-form button[type="submit"]', function(e) {
-            e.preventDefault();
-            var form = $(this).closest('form');
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data remaja ini akan dihapus secara permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+<script>
+    $(document).on('click', 'form.delete-form button[type="submit"]', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data remaja ini akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
-    </script>
+    });
+</script>
 @endsection
