@@ -25,7 +25,9 @@
                 </form>
                 
                 <div class="d-flex mb-3">
+                @if (auth()->user()->role == 'admin')
                     <a class="btn btn-primary mt-4 me-2" href="{{ route('pengukuran.create') }}">Tambah</a>
+                    @endif
                     <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4 mx-2">Cetak PDF</a>
                     <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
                 </div>

@@ -180,6 +180,11 @@
                             <div class="d-sm-none d-lg-inline-block">{{ Auth::user()->name }}</div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            @if (Auth::user()->role == 'remaja')
+                            <a href="{{ route('profile') }}" class="dropdown-item">
+                                <span>Profile</span>
+                            </a>
+                            @endif
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
@@ -267,17 +272,6 @@
                                 <span>Artikel</span>
                             </a>
                         </li>
-
-                        @if (Auth::user()->role == 'remaja')
-                        <li class="{{ request()->is('profil') ? 'active' : '' }}">
-                            <a href="{{ route('profile') }}" class="nav-link active">
-                                <i class="bi bi-chat-dots-fill"></i>
-                                <span>Profile</span>
-                            </a>
-                        </li>
-                        @endif
-
-
 
             </div>
 
