@@ -88,4 +88,11 @@ class ArtikelController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function show($id)
+    {
+        $artikel = Artikel::findOrFail($id);
+        return view('admin.artikel.show', compact('artikel'));
+    }
+
 }

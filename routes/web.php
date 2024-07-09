@@ -47,4 +47,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications/mark-as-read/{id}', [NotificationController::class, 'markNotificationAsRead'])->name('notifications.markAsRead');
     Route::get('profile', [RemajaController::class, 'profile'])->name('profile');
     Route::put('/profile/{id}', [RemajaController::class, 'profileUpdate'])->name('profile.update');
+    Route::get('/artikel/{id}', [ArtikelController::class, 'show'])->name('artikel.show');
 });

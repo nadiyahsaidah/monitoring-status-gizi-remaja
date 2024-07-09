@@ -4,7 +4,6 @@
 
 @section('content')
     @if (Auth::user()->role != 'remaja')
-
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -28,11 +27,12 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $artikel->judul }}</td>
-                                            <td>{{ $artikel->deskripsi }}</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($artikel->deskripsi, 150, $end='...') }}</td>
                                             <td><img src="{{ asset('storage/' . $artikel->gambar) }}" width="100"
                                                     alt=""></td>
                                             <td>
                                                 <div class="d-flex">
+                                                <a href="{{ route('artikel.show', $artikel->id) }}" class="btn btn-primary">Detail</a>
                                                     <button type="button" class="btn btn-warning mx-2 editBtn"
                                                         data-id="{{ $artikel->id }}" data-judul="{{ $artikel->judul }}"
                                                         data-deskripsi="{{ $artikel->deskripsi }}"
@@ -133,11 +133,11 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex">
-                            <img src="{{ asset('storage/' . $artikel->gambar) }}" class="card-img-top"
-                                alt="{{ $artikel->judul }}" style="width: 150px; border-radius: 10px;">
+                            <img src="{{ asset('storage/' . $artikel->gambar) }}" class="card-img-top" alt="{{ $artikel->judul }}" style="width: 150px; border-radius: 10px;">
                             <div class="mx-4">
                                 <h5 class="card-title">{{ $artikel->judul }}</h5>
-                                <p class="card-text">{{ $artikel->deskripsi }}</p>
+                                <p class="card-text">{{ Str::limit($artikel->deskripsi, 100) }}</p>
+                                <a href="{{ route('artikel.show', $artikel->id) }}" class="btn btn-primary">Tampilkan Selengkapnya</a>
                                 <div class="text-muted">
                                     <small>{{ $artikel->created_at->format('d M Y') }}</small>
                                 </div>
@@ -147,10 +147,10 @@
                 </div>
             </div>
             @endforeach
-            
         </div>
     @endif
 @endsection
+
 @section('scripts')
     <script>
         $(document).ready(function() {
