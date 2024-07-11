@@ -10,48 +10,56 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class RemajaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+
     public function index()
-{
-    $remajas = Remaja::with('user', 'pengukurans')->get();
-    $charts = [];
-
-    foreach ($remajas as $remaja) {
-        $pengukuranRemaja = $remaja->pengukurans;
-        $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->toArray();
-        $bb = $pengukuranRemaja->pluck('bb')->toArray();
-        $tb = $pengukuranRemaja->pluck('tb')->toArray();
-
-        if (count($bb) > 0 && count($tb) > 0) {
-            $bbChart = (new LarapexChart)->lineChart()
-                ->setTitle('Perkembangan Berat Badan')
-                ->setXAxis($dates)
-                ->addData('Berat Badan', $bb)
-                ->setColors(['#ff6384']);
-
-            $tbChart = (new LarapexChart)->lineChart()
-                ->setTitle('Perkembangan Tinggi Badan')
-                ->setXAxis($dates)
-                ->addData('Tinggi Badan', $tb)
-                ->setColors(['#0000ff']);
-        } else {
-            $bbChart = null;
-            $tbChart = null;
+    {
+        $remajas = Remaja::with('user', 'pengukurans')->get();
+        $charts = [];
+    
+        foreach ($remajas as $remaja) {
+            $pengukuranRemaja = $remaja->pengukurans;
+            $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->toArray();
+            $bb = $pengukuranRemaja->pluck('bb')->toArray();
+            $tb = $pengukuranRemaja->pluck('tb')->toArray();
+    
+            if (count($bb) > 0 && count($tb) > 0) {
+                $formattedDates = collect($dates)->map(function ($date) {
+                    return Carbon::parse($date)->formatLocalized('%d %B %Y');
+                })->toArray();
+    
+                $bbChart = (new LarapexChart)->areaChart()
+                    ->setTitle('Perkembangan Berat Badan')
+                    ->setXAxis($formattedDates)
+                    ->addData('Berat Badan', $bb)
+                    ->setColors(['#ff6384']);
+    
+                $tbChart = (new LarapexChart)->areaChart()
+                    ->setTitle('Perkembangan Tinggi Badan')
+                    ->setXAxis($formattedDates)
+                    ->addData('Tinggi Badan', $tb)
+                    ->setColors(['#0000ff']);
+            } else {
+                $bbChart = null;
+                $tbChart = null;
+            }
+    
+            $charts[$remaja->id] = [
+                'bbChart' => $bbChart,
+                'tbChart' => $tbChart,
+            ];
         }
-
-        $charts[$remaja->id] = [
-            'bbChart' => $bbChart,
-            'tbChart' => $tbChart,
-        ];
+    
+        return view('admin.remaja.index', compact('remajas', 'charts'));
     }
-
-    return view('admin.remaja.index', compact('remajas', 'charts'));
-}
+    
     public function profile()
     {
         $user = Auth::user();
@@ -158,15 +166,6 @@ class RemajaController extends Controller
             return back()->withInput()->withErrors(['error' => 'Gagal menambahkan data remaja: ' . $e->getMessage()]);
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -254,4 +253,38 @@ class RemajaController extends Controller
             'usia' => $remaja->hitungUsia(), 
         ]);
     }
+
+    public function show($id)
+{
+    $remaja = Remaja::with('user', 'pengukurans')->findOrFail($id);
+    $pengukuranRemaja = $remaja->pengukurans;
+    $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->map(function ($date) {
+        return Carbon::parse($date)->isoFormat('DD MMMM YYYY');
+    })->toArray();
+    $bb = $pengukuranRemaja->pluck('bb')->toArray();
+    $tb = $pengukuranRemaja->pluck('tb')->toArray();
+    $bb = $pengukuranRemaja->pluck('bb')->toArray();
+    $tb = $pengukuranRemaja->pluck('tb')->toArray();
+
+    $bbChart = null;
+    $tbChart = null;
+
+    if (count($bb) > 0 && count($tb) > 0) {
+        $bbChart = (new LarapexChart)->areaChart()
+            ->setTitle('Perkembangan Berat Badan')
+            ->setXAxis($dates)
+            ->addData('Berat Badan', $bb)
+            ->setColors(['#ff6384']);
+
+        $tbChart = (new LarapexChart)->areaChart()
+            ->setTitle('Perkembangan Tinggi Badan')
+            ->setXAxis($dates)
+            ->addData('Tinggi Badan', $tb)
+            ->setColors(['#0000ff']);
+    }
+    
+
+    return view('admin.remaja.show', compact('remaja', 'pengukuranRemaja', 'bbChart', 'tbChart'));
+}
+
 }

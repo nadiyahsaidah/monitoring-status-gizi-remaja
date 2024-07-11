@@ -48,4 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::get('profile', [RemajaController::class, 'profile'])->name('profile');
     Route::put('/profile/{id}', [RemajaController::class, 'profileUpdate'])->name('profile.update');
     Route::get('/artikel/{id}', [ArtikelController::class, 'show'])->name('artikel.show');
+    Route::put('/artikel/{id}', [ArtikelController::class, 'update'])->name('artikel.update');
+    Route::get('/remaja/{id}', [RemajaController::class, 'show'])->name('remaja.show');
+
 });

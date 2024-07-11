@@ -146,7 +146,7 @@
                                         class="rounded-circle">
                                     <div class="is-online"></div>
                                 </div>
-                                <div class="dropdown-item-desc">
+                                <div class="dropdown-item-desc"  onclick="markAsRead('{{ isset($notification) ? $notification->id : '' }}')"s>
                                     @if (Auth::user()->role == 'remaja')
                                         <b>Halo {{ $notification->data['remaja_nama'] }}, Anda Telah Menerima
                                             Balasan dari Petugas</b>
@@ -208,6 +208,9 @@
                         <a href="index.html">St</a>
                     </div>
                     <ul class="sidebar-menu">
+                        
+
+                        @if (Auth::user()->role != 'remaja')                            
                         <li class="menu-header">Dashboard</li>
 
                         <li class="{{ request()->is('home') ? 'active' : '' }}">
@@ -216,8 +219,16 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
+                        @endif
 
                         @if (Auth::user()->role == 'remaja')
+                        <li class="{{ request()->is('home') ? 'active' : '' }}">
+                            <a href="{{ route('home') }}" class="nav-link active">
+                                <i class="bi bi-house-door-fill"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        
                         <li class="{{ request()->is('pengukuran') ? 'active' : '' }}">
                                 <a href="{{ route('pengukuran.index') }}" class="nav-link active">
                                     <i class="bi bi-rulers"></i>
@@ -241,15 +252,7 @@
                                     <i class="bi bi-person-badge-fill"></i>
                                     <span>Petugas</span>
                                 </a>
-                            </li>
-                            <li class="{{ request()->is('pengukuran') ? 'active' : '' }}">
-                                <a href="{{ route('pengukuran.index') }}" class="nav-link active">
-                                    <i class="bi bi-rulers"></i>
-                                    <span>Pengukuran</span>
-                                </a>
-                            </li>
-
-                           
+                            </li>                           
                         @endif
 
                         @if (Auth::user()->role == 'admin')
@@ -260,18 +263,40 @@
                             </a>
                         </li>
                         @endif
-                        <li class="{{ request()->is('konsultasi') ? 'active' : '' }}">
-                            <a href="{{ route('konsultasi.index') }}" class="nav-link active">
-                                <i class="bi bi-chat-dots-fill"></i>
-                                <span>Konsultasi</span>
-                            </a>
-                        </li>
                         <li class="{{ request()->is('artikel') ? 'active' : '' }}">
                             <a href="{{ route('artikel.index') }}" class="nav-link active">
                                 <i class="bi bi-file-earmark-text-fill"></i>
                                 <span>Artikel</span>
                             </a>
                         </li>
+                            
+                        @if (Auth::user()->role != 'remaja')
+                        <li class="menu-header">Data Layanan</li>
+                            <li class="{{ request()->is('konsultasi') ? 'active' : '' }}">
+                            <a href="{{ route('konsultasi.index') }}" class="nav-link active">
+                                <i class="bi bi-chat-dots-fill"></i>
+                                <span>Konsultasi</span>
+                            </a>
+                        </li> 
+                        @endif
+
+                        @if (Auth::user()->role == 'remaja' )
+                            <li class="{{ request()->is('konsultasi') ? 'active' : '' }}">
+                            <a href="{{ route('konsultasi.index') }}" class="nav-link active">
+                                <i class="bi bi-chat-dots-fill"></i>
+                                <span>Konsultasi</span>
+                            </a>
+                        </li> 
+                        @endif  
+                        
+                        @if (Auth::user()->role != 'remaja')
+                            <li class="{{ request()->is('pengukuran') ? 'active' : '' }}">
+                                <a href="{{ route('pengukuran.index') }}" class="nav-link active">
+                                    <i class="bi bi-rulers"></i>
+                                    <span>Pengukuran</span>
+                                </a>
+                            </li>
+                            @endif  
 
             </div>
 
@@ -335,6 +360,19 @@
         $(document).ready(function() {
             $('.select2').select2();
         });
+    </script>
+    <script>
+        function markAsRead(id) {
+            $.ajax({
+                url: '{{ route('notifications.markAsRead', '') }}' + '/' + id,
+                method: 'GET',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        location.reload();
+                    }
+                }
+            });
+        }
     </script>
 
     <!-- Template JS File -->

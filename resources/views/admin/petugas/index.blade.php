@@ -18,8 +18,8 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th>Username</th>
                                     <th>Nama</th>
+                                    <th>Username</th>                                    
                                     <th>Jenis Kelamin</th>
                                     <th>NIK</th>
                                     <th>NIP</th>
@@ -36,8 +36,8 @@
                                 @foreach ($petugas as $petugas)
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td>{{ $petugas->user->username }}</td>
                                         <td>{{ $petugas->user->nama }}</td>
+                                        <td>{{ $petugas->user->username }}</td>                                        
                                         <td>{{ $petugas->jenis_kelamin }}</td>
                                         <td>{{ $petugas->nik }}</td>
                                         <td>{{ $petugas->nip }}</td>
@@ -53,13 +53,13 @@
                                                     data-bs-target="#modalEditPetugas{{ $petugas->id }}">
                                                     Edit
                                                 </button>
-                                                <form action="{{ route('petugas.destroy', $petugas->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-danger" onclick="deletePetugas({{ $petugas->id }})">
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                                <form id="delete-form-{{ $petugas->id }}" action="{{ route('petugas.destroy', $petugas->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger" onclick="deletePetugas({{ $petugas->id }})">
+                                                    Delete
+                                                </button>
+                                            </form>
                                             </div>
                                         </td>
                                         @endif

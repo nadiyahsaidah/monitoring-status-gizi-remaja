@@ -37,8 +37,11 @@
                                                         data-id="{{ $artikel->id }}" data-judul="{{ $artikel->judul }}"
                                                         data-deskripsi="{{ $artikel->deskripsi }}"
                                                         data-gambar="{{ $artikel->gambar }}">Edit</button>
-                                                    <button type="button" class="btn btn-info deleteBtn"
-                                                        data-id="{{ $artikel->id }}">Hapus</button>
+                                                            <form id="deleteForm{{ $artikel->id }}" action="{{ route('artikel.destroy', $artikel->id) }}" method="POST" style="display: inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger" onclick="deleteConfirmation({{ $artikel->id }})">Hapus</button>
+                                                            </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -92,9 +95,9 @@
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form action="" method="POST" id="editForm" enctype="multipart/form-data">
+                    <form action="{{ route('artikel.store') }}"  method="POST" id="editForm" enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')
+                        @method('POST')
                         <div class="modal-header">
                             <h5 class="modal-title" id="editModalLabel">Edit Artikel</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">

@@ -11,24 +11,44 @@
             font-family: 'Poppins', sans-serif;
         }
         .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #004080 50%, #f3eafe 50%);
+        }
+        .login-box {
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
         }
-        .login-form {
+        .login-left {
+            background: #f3eafe;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+        }
+        .login-right {
             padding: 50px;
-            flex: 1;
         }
-        .login-form h2 {
+        .login-right h2 {
             font-weight: bold;
             margin-bottom: 30px;
         }
-        .login-form .form-control {
+        .login-right .form-control {
             border-radius: 10px;
             background: #f3f4f6;
             border: none;
         }
-        .login-form .btn-primary {
+        .login-right .btn-primary {
             background: #7367f0;
             border: none;
             border-radius: 10px;
@@ -37,20 +57,8 @@
             font-weight: bold;
             position: relative; /* Position relative for absolute loading spinner */
         }
-        .login-form .btn-primary:hover {
+        .login-right .btn-primary:hover {
             background: #5a56c5;
-        }
-        .login-form .social-login {
-            text-align: center;
-            margin-top: 30px;
-        }
-        .login-form .social-login button {
-            margin: 0 10px;
-            border: none;
-            background: transparent;
-        }
-        .login-form .social-login button img {
-            width: 30px;
         }
         .error-message {
             color: red;
@@ -63,14 +71,32 @@
             transform: translate(-50%, -50%);
             display: none;
         }
+        .login-left img {
+            max-width: 150px;
+        }
+        .login-left h3 {
+            margin-top: 20px;
+            color: #004080;
+        }
+        @media (min-width: 768px) {
+            .login-box {
+                flex-direction: row;
+            }
+            .login-left, .login-right {
+                width: 50%;
+            }
+        }
     </style>
 </head>
 <body>
-<div class="container d-flex align-items-center justify-content-center vh-100">
-    <div class="login-container">
-        <div class="login-form">
-            <h2>LOGIN</h2>
-            <p>How to get started lorem ipsum dolor at?</p>
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-left">
+            <img src="{{ asset('assets/img/logo/logo.png') }}" alt="Logo">
+            <h3>Website Monitoring Status Gizi Remaja di Puskesmas Kasihan II</h3>
+        </div>
+        <div class="login-right">
+            <h2>User Authentication</h2>
             <form id="loginForm" action="{{ route('login') }}" method="post">
                 @csrf
                 <div class="">
@@ -87,7 +113,7 @@
                         <span class="error-message">{{ $message }}</span>
                     @enderror
                 </div>
-                <button type="submit" class="btn btn-primary mt-3 position-relative">Login
+                <button type="submit" class="btn btn-primary mt-3 position-relative">Log In
                     <div class="loading-spinner">
                         <div class="spinner-border text-light" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -95,26 +121,12 @@
                     </div>
                 </button>
             </form>
-            <div class="social-login">
-                <p>Atau masuk menggunakan:</p>
-                <button onclick="loginViaGoogle()"><img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google"></button>
-                <button onclick="loginViaFacebook()"><img src="https://img.icons8.com/fluency/48/000000/facebook-new.png" alt="Facebook"></button>
-            </div>
         </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
-     function loginViaFacebook() {
-        if (confirm('Mau Login lewat facebook??')) {
-            alert('gabisa whahahaha');
-        }
-    }
-         function loginViaGoogle() {
-        if (confirm('Mau Login lewat Google??')) {
-            alert('gabisa whahahaha');
-        }
-    }
     document.getElementById('loginForm').addEventListener('submit', function() {
         document.querySelector('.loading-spinner').style.display = 'block';
         document.querySelector('.btn-primary').disabled = true;

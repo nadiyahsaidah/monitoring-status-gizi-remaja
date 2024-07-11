@@ -39,7 +39,7 @@
             <div class="card">
                 <div class="card-body">
                     @if (Auth::user()->role == 'remaja')
-                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#tambahModal">
+                        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#tambahModal">
                             Tambah Konsultasi
                         </button>
                     @endif
@@ -82,10 +82,10 @@
                                         <td>
                                             <div class="d-flex gap-3">
                                               @if (Auth::user()->role == 'remaja')
-                                              <button type="button" class="btn btn-info" data-toggle="modal" data-target="#showModal{{ $konsultasi->id }}"
+                                              <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#showModal{{ $konsultasi->id }}"
                                                 onclick="markAsRead('{{ isset($notification) ? $notification->id : '' }}')">Show</button>
                                               @else
-                                              <button type="button" class="btn btn-info" data-toggle="modal" data-target="#showModal{{ $konsultasi->id }}">Show</button>
+                                              <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#showModal{{ $konsultasi->id }}">Show</button>
                                               @endif
                                         
                                                 <form action="{{ route('konsultasi.destroy', $konsultasi->id) }}"
@@ -96,15 +96,14 @@
                                                         onclick="deleteConfirmation({{ $konsultasi->id }})">Hapus</button>
                                                 </form>
                                             </div>
-
+                                            
+                                             <!-- Modal for Detail Konsultasi Remaja -->
                                             <div class="modal fade" id="showModal{{ $konsultasi->id }}" tabindex="-1" role="dialog" aria-labelledby="showModalLabel{{ $konsultasi->id }}" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="showModalLabel{{ $konsultasi->id }}">Detail Konsultasi</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="container">
@@ -147,7 +146,7 @@
                                             </div>
 
                                             <!-- Modal Reply -->
-                                            <div class="modal fade" id="replyModal{{ $konsultasi->id }}" tabindex="-1"
+                                            <!-- <div class="modal fade" id="replyModal{{ $konsultasi->id }}" tabindex="-1"
                                                 role="dialog" aria-labelledby="replyModalLabel{{ $konsultasi->id }}"
                                                 aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
@@ -181,7 +180,7 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </td>
                                     </tr>
                                 @endforeach
@@ -202,9 +201,7 @@
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="tambahModalLabel">Tambah Konsultasi</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -224,7 +221,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>

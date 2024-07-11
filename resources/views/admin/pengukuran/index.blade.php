@@ -27,7 +27,7 @@
                 <div class="d-flex mb-3">
                 @if (auth()->user()->role == 'admin')
                     <a class="btn btn-primary mt-4 me-2" href="{{ route('pengukuran.create') }}">Tambah</a>
-                    @endif
+                @endif
                     <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4 mx-2">Cetak PDF</a>
                     <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
                 </div>
@@ -63,7 +63,29 @@
                                 <td>{{ \Carbon\Carbon::parse($pengukuran->remaja->tanggal_lahir)->age }}</td>
                                 <td>{{ $pengukuran->bb }}</td>
                                 <td>{{ $pengukuran->tb }}</td>
-                                <td><span class="badge badge-success">{{ $pengukuran->status_gizi }}</span></td>
+                                <td>
+                                    @php
+                                    $badgeClass = 'badge badge-secondary'; // Default class
+                                    switch (strtolower($pengukuran->status_gizi)) {
+                                        case 'gizi buruk':
+                                            $badgeClass = 'badge badge-danger';
+                                            break;
+                                        case 'gizi kurang':
+                                            $badgeClass = 'badge badge-warning';
+                                            break;
+                                        case 'gizi baik':
+                                            $badgeClass = 'badge badge-success';
+                                            break;
+                                        case 'gizi lebih':
+                                            $badgeClass = 'badge badge-info';
+                                            break;
+                                        case 'obesitas':
+                                            $badgeClass = 'badge badge-primary';
+                                            break;
+                                    }
+                                    @endphp
+                                    <span class="{{ $badgeClass }}">{{ $pengukuran->status_gizi }}</span>
+                                </td>
                                 <td>{{ $pengukuran->lila }}</td>
                                 <td>{{ $pengukuran->tensi }}</td>
                                 <td>
@@ -106,7 +128,29 @@
                             <td>{{ $item->tb }}</td>
                             <td>{{ $item->lila }}</td>
                             <td>{{ $item->tensi }}</td>
-                            <td><span class="badge badge-success">{{ $item->status_gizi }}</span></td>
+                            <td>
+                                @php
+                                $badgeClass = 'badge badge-secondary'; // Default class
+                                switch (strtolower($item->status_gizi)) {
+                                    case 'gizi buruk':
+                                        $badgeClass = 'badge badge-danger';
+                                        break;
+                                    case 'gizi kurang':
+                                        $badgeClass = 'badge badge-warning';
+                                        break;
+                                    case 'gizi baik':
+                                        $badgeClass = 'badge badge-success';
+                                        break;
+                                    case 'gizi lebih':
+                                        $badgeClass = 'badge badge-info';
+                                        break;
+                                    case 'obesitas':
+                                        $badgeClass = 'badge badge-primary';
+                                        break;
+                                }
+                                @endphp
+                                <span class="{{ $badgeClass }}">{{ $item->status_gizi }}</span>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

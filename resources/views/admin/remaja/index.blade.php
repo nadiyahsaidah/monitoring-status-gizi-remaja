@@ -18,6 +18,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">No</th>
+                                <th>Nama</th>
                                 <th>Username</th>
                                 <th>Jenis Kelamin</th>
                                 <th>NIK</th>
@@ -25,7 +26,7 @@
                                 <th>Tanggal Lahir</th>
                                 <th>No Hp</th>
                                 <th>Alamat</th>
-                                @if (auth()->user()->role == 'admin')
+                                @if (auth()->user()->role == 'admin' || 'petugas')
                                 <th>Action</th>
                                 @endif
                             </tr>
@@ -34,6 +35,7 @@
                             @foreach ($remajas as $remaja)
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $remaja->user->nama }}</td>
                                 <td>{{ $remaja->user->username }}</td>
                                 <td>{{ $remaja->jenis_kelamin }}</td>
                                 <td>{{ $remaja->nik }}</td>
@@ -41,27 +43,33 @@
                                 <td>{{ $remaja->tanggal_lahir }}</td>
                                 <td>{{ $remaja->no_hp }}</td>
                                 <td>{{ $remaja->alamat }}</td>
-                                @if (auth()->user()->role == 'admin')
+                                @if (auth()->user()->role == 'admin' || 'petugas')
                                 <td>
+                                @if (auth()->user()->role == 'admin')
                                     <div class="d-flex">
                                         <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#modalEditRemaja{{ $remaja->id }}">
                                             Edit
                                         </button>
-                                        <form action="{{ route('remaja.destroy', $remaja->id) }}" method="POST" class="delete-form">
+                                        <form action="{{ route('remaja.destroy', $remaja->id) }}" method="POST" class="delete-form mx-2">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
-                                        <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#modalPerkembanganRemaja{{ $remaja->id }}">
-                                            Perkembangan
-                                        </button>
+                                        <a href="{{ route('remaja.show', $remaja->id) }}" class="btn btn-primary">Perkembangan</a>
                                     </div>
-                                </td>
+                                    @endif
+                                @if (auth()->user()->role == 'petugas')
+                                    <div class="d-flex">
+                                        <a href="{{ route('remaja.show', $remaja->id) }}" class="btn btn-primary">Perkembangan</a>
+                                    </div>
+                                @endif
+</td>
+
                                 @endif
                             </tr>
 
                             <!-- Modal for Perkembangan Remaja -->
-                            <div class="modal fade" id="modalPerkembanganRemaja{{ $remaja->id }}" tabindex="-1" aria-labelledby="modalPerkembanganRemajaLabel{{ $remaja->id }}" aria-hidden="true">
+                            <!-- <div class="modal fade" id="modalPerkembanganRemaja{{ $remaja->id }}" tabindex="-1" aria-labelledby="modalPerkembanganRemajaLabel{{ $remaja->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -87,7 +95,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Modal for Edit Remaja -->
                             <div class="modal fade" id="modalEditRemaja{{ $remaja->id }}" tabindex="-1" aria-labelledby="modalEditRemajaLabel{{ $remaja->id }}" aria-hidden="true">
@@ -210,13 +218,13 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 @foreach ($charts as $remaja_id => $chart)
     @if ($chart['bbChart'] && $chart['tbChart'])
         {!! $chart['bbChart']->script() !!}
         {!! $chart['tbChart']->script() !!}
     @endif
-@endforeach
+@endforeach -->
 @endsection
 
 @section('scripts')

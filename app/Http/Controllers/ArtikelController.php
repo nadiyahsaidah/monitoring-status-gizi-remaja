@@ -75,7 +75,7 @@ class ArtikelController extends Controller
         return redirect()->route('artikel.index')->with('success', 'Artikel berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy2($id)
     {
         $artikel = Artikel::findOrFail($id);
 
@@ -89,6 +89,16 @@ class ArtikelController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function destroy($id)
+    {
+        try {
+            $artikel = Artikel::findOrFail($id);
+            $artikel->delete();
+            return redirect()->route('artikel.index')->with('success', 'Data pengukuran berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('artikel.index')->with('error', 'Gagal menghapus data pengukuran: ' . $e->getMessage());
+        }
+    }
     public function show($id)
     {
         $artikel = Artikel::findOrFail($id);
