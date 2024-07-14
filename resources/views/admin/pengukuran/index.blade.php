@@ -29,7 +29,7 @@
                     <a class="btn btn-primary mt-4 me-2" href="{{ route('pengukuran.create') }}">Tambah</a>
                 @endif
                     <a href="{{ route('cetakPDF', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-danger mt-4 mx-2">Cetak PDF</a>
-                    <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Export Excel</a>
+                    <a href="{{ route('exportExcel', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}" class="btn btn-success mt-4">Cetak Excel</a>
                 </div>
                 
                 <div class="table-responsive">
@@ -94,10 +94,12 @@
                                         <form id="deleteForm{{ $pengukuran->id }}" action="{{ route('pengukuran.destroy', $pengukuran->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger" onclick="deleteConfirmation({{ $pengukuran->id }})">Delete</button>
+                                            <button type="button" class="btn btn-danger" onclick="deleteConfirmation({{ $pengukuran->id }})">Hapus</button>
                                         </form>
                                     </div>
                                 </td>
+
+
                             </tr>
                             @endforeach
                         </tbody>
@@ -181,4 +183,5 @@
         });
     }
 </script>
+
 @endsection

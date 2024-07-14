@@ -101,7 +101,7 @@
                 @csrf
                 <div class="">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Nama Pengguna" name="username">
+                    <input type="text" class="form-control" id="username" placeholder="Username Pengguna" name="username" value="{{ old('username') }}">
                     @error('username')
                     <span class="error-message m-0">{{ $message }}</span>
                     @enderror
@@ -120,6 +120,11 @@
                         </div>
                     </div>
                 </button>
+                @if ($errors->has('login'))
+                    <div class="mt-3 error-message">
+                        {{ $errors->first('login') }}
+                    </div>
+                @endif
             </form>
         </div>
     </div>

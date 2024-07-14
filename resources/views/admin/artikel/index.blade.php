@@ -40,7 +40,7 @@
                                                             <form id="deleteForm{{ $artikel->id }}" action="{{ route('artikel.destroy', $artikel->id) }}" method="POST" style="display: inline;">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger" onclick="deleteConfirmation({{ $artikel->id }})">Hapus</button>
+                                                                <button type="button" class="btn btn-danger deleteBtn" data-id="{{ $artikel->id }}">Hapus</button>
                                                             </form>
                                                 </div>
                                             </td>
@@ -139,7 +139,6 @@
                             <img src="{{ asset('storage/' . $artikel->gambar) }}" class="card-img-top" alt="{{ $artikel->judul }}" style="width: 150px; border-radius: 10px;">
                             <div class="mx-4">
                                 <h5 class="card-title">{{ $artikel->judul }}</h5>
-                                <p class="card-text">{{ Str::limit($artikel->deskripsi, 100) }}</p>
                                 <a href="{{ route('artikel.show', $artikel->id) }}" class="btn btn-primary">Tampilkan Selengkapnya</a>
                                 <div class="text-muted">
                                     <small>{{ $artikel->created_at->format('d M Y') }}</small>
@@ -156,62 +155,75 @@
 
 @section('scripts')
     <script>
-        $(document).ready(function() {
-            // Edit Artikel Modal
-            $('.editBtn').click(function() {
-                var id = $(this).data('id');
-                var judul = $(this).data('judul');
-                var deskripsi = $(this).data('deskripsi');
-                var gambar = $(this).data('gambar');
+       $(document).ready(function() {
+    // Edit Artikel Modal
+    $('.editBtn').click(function() {
+        var id = $(this).data('id');
+        var judul = $(this).data('judul');
+        var deskripsi = $(this).data('deskripsi');
+        var gambar = $(this).data('gambar');
 
-                $('#editId').val(id);
-                $('#edit_judul').val(judul);
-                $('#edit_deskripsi').val(deskripsi);
-                // Optional: handle gambar display here if needed
+        $('#editId').val(id);
+        $('#edit_judul').val(judul);
+        $('#edit_deskripsi').val(deskripsi);
+        // Optional: handle gambar display here if needed
 
-                $('#editModal').modal('show');
-            });
+        $('#editModal').modal('show');
+    });
 
-            // Delete Artikel with SweetAlert
-            $('.deleteBtn').click(function() {
-                var id = $(this).data('id');
-                var url = "{{ route('artikel.destroy', ':id') }}";
-                url = url.replace(':id', id);
+    // Delete Artikel with SweetAlert
+    $('.deleteBtn').click(function() {
+        var id = $(this).data('id');
+        var url = "{{ route('artikel.destroy', ':id') }}";
+        url = url.replace(':id', id);
 
-                swal({
-                        title: "Apakah Anda yakin?",
-                        text: "Artikel akan dihapus secara permanen!",
-                        icon: "warning",
-                        buttons: ["Batal", "Hapus"],
-                        dangerMode: true,
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            $.ajax({
-                                url: url,
-                                type: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                success: function(response) {
-                                    if (response.success) {
-                                        swal("Artikel berhasil dihapus.", {
-                                            icon: "success",
-                                        }).then(() => {
-                                            location.reload();
-                                        });
-                                    } else {
-                                        swal("Terjadi kesalahan!", "Artikel gagal dihapus.",
-                                            "error");
-                                    }
-                                },
-                                error: function(xhr, ajaxOptions, thrownError) {
-                                    swal("Error!", "Artikel gagal dihapus.", "error");
-                                }
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Artikel akan dihapus secara permanen!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Hapus",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire(
+                                "Deleted!",
+                                "Artikel berhasil dihapus.",
+                                "success"
+                            ).then(() => {
+                                location.reload();
                             });
+                        } else {
+                            Swal.fire(
+                                "Error!",
+                                "Artikel gagal dihapus.",
+                                "error"
+                            );
                         }
-                    });
-            });
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        Swal.fire(
+                            "Error!",
+                            "Artikel gagal dihapus.",
+                            "error"
+                        );
+                    }
+                });
+            }
         });
+    });
+});
+
+
     </script>
 @endsection

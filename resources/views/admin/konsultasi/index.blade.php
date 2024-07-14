@@ -83,9 +83,9 @@
                                             <div class="d-flex gap-3">
                                               @if (Auth::user()->role == 'remaja')
                                               <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#showModal{{ $konsultasi->id }}"
-                                                onclick="markAsRead('{{ isset($notification) ? $notification->id : '' }}')">Show</button>
+                                                onclick="markAsRead('{{ isset($notification) ? $notification->id : '' }}')">Detail</button>
                                               @else
-                                              <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#showModal{{ $konsultasi->id }}">Show</button>
+                                              <button type="button" class="btn btn-info mx-2" data-bs-toggle="modal" data-bs-target="#showModal{{ $konsultasi->id }}">Detail</button>
                                               @endif
                                         
                                                 <form action="{{ route('konsultasi.destroy', $konsultasi->id) }}"

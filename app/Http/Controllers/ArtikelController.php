@@ -88,17 +88,18 @@ class ArtikelController extends Controller
 
         return response()->json(['success' => true]);
     }
-
+    
     public function destroy($id)
     {
-        try {
-            $artikel = Artikel::findOrFail($id);
-            $artikel->delete();
-            return redirect()->route('artikel.index')->with('success', 'Data pengukuran berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('artikel.index')->with('error', 'Gagal menghapus data pengukuran: ' . $e->getMessage());
+        $artikel = Artikel::findOrFail($id);
+    
+        if ($artikel->delete()) {
+            return response()->json(['success' => true, 'message' => 'Artikel berhasil dihapus.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Artikel gagal dihapus.']);
         }
     }
+    
     public function show($id)
     {
         $artikel = Artikel::findOrFail($id);

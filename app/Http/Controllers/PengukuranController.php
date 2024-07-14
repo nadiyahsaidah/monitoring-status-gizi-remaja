@@ -116,10 +116,10 @@ class PengukuranController extends Controller
         $tanggal_lahir = new Carbon($remaja->tanggal_lahir);
         $usia = $tanggal_lahir->diffInYears($validatedData['tanggal_pengukuran']);
 
-        if (($remaja->jenis_kelamin == 'Laki-laki' && ($usia < 13 || $usia > 18)) ||
-            ($remaja->jenis_kelamin == 'Perempuan' && ($usia < 13 || $usia > 16))
+        if (($remaja->jenis_kelamin == 'Laki-laki' && ($usia < 10 || $usia > 18)) ||
+            ($remaja->jenis_kelamin == 'Perempuan' && ($usia < 10 || $usia > 18))
         ) {
-            return redirect()->back()->with('error', 'Usia remaja harus antara 13-18 tahun untuk laki-laki dan 13-16 tahun untuk perempuan.');
+            return redirect()->back()->with('error', 'Usia remaja harus antara 10-18 tahun untuk laki-laki dan 10-18 tahun untuk perempuan.');
         }
 
         // Tentukan standar IMT berdasarkan jenis kelamin dan usia remaja
@@ -214,10 +214,10 @@ class PengukuranController extends Controller
         $tanggal_lahir = new Carbon($remaja->tanggal_lahir);
         $usia = $tanggal_lahir->diffInYears($validatedData['tanggal_pengukuran']);
 
-        if (($remaja->jenis_kelamin == 'Laki-laki' && ($usia < 13 || $usia > 18)) ||
-            ($remaja->jenis_kelamin == 'Perempuan' && ($usia < 13 || $usia > 16))
+        if (($remaja->jenis_kelamin == 'Laki-laki' && ($usia < 10 || $usia > 18)) ||
+            ($remaja->jenis_kelamin == 'Perempuan' && ($usia < 10 || $usia > 18))
         ) {
-            return redirect()->back()->with('error', 'Usia remaja harus antara 13-18 tahun untuk laki-laki dan 13-16 tahun untuk perempuan.');
+            return redirect()->back()->with('error', 'Usia remaja harus antara 13-18 tahun untuk laki-laki dan 10-18 tahun untuk perempuan.');
         }
 
         // Tentukan standar IMT berdasarkan jenis kelamin dan usia remaja

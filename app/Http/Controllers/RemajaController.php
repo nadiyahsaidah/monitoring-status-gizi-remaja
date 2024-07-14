@@ -14,11 +14,6 @@ use Carbon\Carbon;
 
 class RemajaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-
     public function index()
     {
         $remajas = Remaja::with('user', 'pengukurans')->get();
@@ -59,7 +54,7 @@ class RemajaController extends Controller
     
         return view('admin.remaja.index', compact('remajas', 'charts'));
     }
-    
+
     public function profile()
     {
         $user = Auth::user();
@@ -69,11 +64,9 @@ class RemajaController extends Controller
 
     public function profileUpdate(Request $request, $id)
     {
-        // Find the remaja by ID
         $remaja = Remaja::findOrFail($id);
         $user = $remaja->user;
     
-        // Validate the request data
         $request->validate([
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
@@ -86,7 +79,6 @@ class RemajaController extends Controller
             'alamat' => 'required|string',
         ]);
     
-        // Update the user information
         $user->nama = $request->nama;
         $user->username = $request->username;
         if ($request->filled('password')) {
@@ -94,7 +86,6 @@ class RemajaController extends Controller
         }
         $user->save();
     
-        // Update the remaja information
         $remaja->jenis_kelamin = $request->jenis_kelamin;
         $remaja->nik = $request->nik;
         $remaja->tempat_lahir = $request->tempat_lahir;
@@ -103,28 +94,17 @@ class RemajaController extends Controller
         $remaja->alamat = $request->alamat;
         $remaja->save();
     
-        // Redirect back with a success message
         return redirect()->route('profile')->with('success', 'Data berhasil diperbarui.');
     }
 
-
-    
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        
-       $request->validate([
+        $request->validate([
             'nama' => 'required|string',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'nik' => 'required|string',
@@ -132,23 +112,21 @@ class RemajaController extends Controller
             'tanggal_lahir' => 'required|date',
             'no_hp' => 'required|string',
             'alamat' => 'required|string',
-            'username' => 'required|string',
             'username' => 'required|string|unique:users',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $user = null;
             $user = new User();
-            $user->username = $request->nama;
+            $user->username = $request->username;
             $user->nama = $request->nama;
             $user->password = bcrypt('password');
             $user->role = 'remaja';
             $user->save();
 
             $remaja = new Remaja();
-            $remaja->user_id = $user ? $user->id : null;
+            $remaja->user_id = $user->id;
             $remaja->jenis_kelamin = $request->jenis_kelamin;
             $remaja->nik = $request->nik;
             $remaja->tempat_lahir = $request->tempat_lahir;
@@ -166,29 +144,23 @@ class RemajaController extends Controller
             return back()->withInput()->withErrors(['error' => 'Gagal menambahkan data remaja: ' . $e->getMessage()]);
         }
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+
+    public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama' => 'required|string',
-            'username' => 'required|string',
+            'username' => 'required|string|unique:users,username,' . $id,
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'nik' => 'required|string',
             'tempat_lahir' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'no_hp' => 'required|string',
             'alamat' => 'required|string',
-
         ]);
 
         try {
@@ -204,9 +176,8 @@ class RemajaController extends Controller
             $remaja->save();
 
             $user = User::findOrFail($remaja->user_id);
-            $user->username = $request->username; 
+            $user->username = $request->username;
             $user->nama = $request->nama;
-            $user->role = 'remaja';
             $user->save();
 
             DB::commit();
@@ -219,9 +190,6 @@ class RemajaController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         try {
@@ -250,41 +218,37 @@ class RemajaController extends Controller
         return response()->json([
             'jenis_kelamin' => $remaja->jenis_kelamin,
             'tanggal_lahir' => $remaja->tanggal_lahir,
-            'usia' => $remaja->hitungUsia(), 
+            'usia' => $remaja->hitungUsia(),
         ]);
     }
 
     public function show($id)
-{
-    $remaja = Remaja::with('user', 'pengukurans')->findOrFail($id);
-    $pengukuranRemaja = $remaja->pengukurans;
-    $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->map(function ($date) {
-        return Carbon::parse($date)->isoFormat('DD MMMM YYYY');
-    })->toArray();
-    $bb = $pengukuranRemaja->pluck('bb')->toArray();
-    $tb = $pengukuranRemaja->pluck('tb')->toArray();
-    $bb = $pengukuranRemaja->pluck('bb')->toArray();
-    $tb = $pengukuranRemaja->pluck('tb')->toArray();
+    {
+        $remaja = Remaja::with('user', 'pengukurans')->findOrFail($id);
+        $pengukuranRemaja = $remaja->pengukurans;
+        $dates = $pengukuranRemaja->pluck('tanggal_pengukuran')->map(function ($date) {
+            return Carbon::parse($date)->isoFormat('DD MMMM YYYY');
+        })->toArray();
+        $bb = $pengukuranRemaja->pluck('bb')->toArray();
+        $tb = $pengukuranRemaja->pluck('tb')->toArray();
 
-    $bbChart = null;
-    $tbChart = null;
+        $bbChart = null;
+        $tbChart = null;
 
-    if (count($bb) > 0 && count($tb) > 0) {
-        $bbChart = (new LarapexChart)->areaChart()
-            ->setTitle('Perkembangan Berat Badan')
-            ->setXAxis($dates)
-            ->addData('Berat Badan', $bb)
-            ->setColors(['#ff6384']);
+        if (count($bb) > 0 && count($tb) > 0) {
+            $bbChart = (new LarapexChart)->areaChart()
+                ->setTitle('Perkembangan Berat Badan')
+                ->setXAxis($dates)
+                ->addData('Berat Badan', $bb)
+                ->setColors(['#ff6384']);
 
-        $tbChart = (new LarapexChart)->areaChart()
-            ->setTitle('Perkembangan Tinggi Badan')
-            ->setXAxis($dates)
-            ->addData('Tinggi Badan', $tb)
-            ->setColors(['#0000ff']);
+            $tbChart = (new LarapexChart)->areaChart()
+                ->setTitle('Perkembangan Tinggi Badan')
+                ->setXAxis($dates)
+                ->addData('Tinggi Badan', $tb)
+                ->setColors(['#0000ff']);
+        }
+
+        return view('admin.remaja.show', compact('remaja', 'pengukuranRemaja', 'bbChart', 'tbChart'));
     }
-    
-
-    return view('admin.remaja.show', compact('remaja', 'pengukuranRemaja', 'bbChart', 'tbChart'));
-}
-
 }
