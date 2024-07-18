@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class RemajaController extends Controller
 {
@@ -151,44 +152,38 @@ class RemajaController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama' => 'required|string',
-            'username' => 'required|string|unique:users,username,' . $id,
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'nik' => 'required|string',
-            'tempat_lahir' => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'no_hp' => 'required|string',
-            'alamat' => 'required|string',
-        ]);
+{
+    $remaja = Remaja::findOrFail($id);
+    $request->validate([
+        'nama' => 'required|string',
+        'username' => [
+            'required',
+            'string',
+            Rule::unique('users')->ignore($remaja->user_id),
+        ],
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'nik' => 'required|string',
+        'tempat_lahir' => 'required|string',
+        'tanggal_lahir' => 'required|date',
+        'no_hp' => 'required|string',
+        'alamat' => 'required|string',
+    ]);
 
-        try {
-            DB::beginTransaction();
+    $remaja->jenis_kelamin = $request->jenis_kelamin;
+    $remaja->nik = $request->nik;
+    $remaja->tempat_lahir = $request->tempat_lahir;
+    $remaja->tanggal_lahir = $request->tanggal_lahir;
+    $remaja->no_hp = $request->no_hp;
+    $remaja->alamat = $request->alamat;
+    $remaja->save();
 
-            $remaja = Remaja::findOrFail($id);
-            $remaja->jenis_kelamin = $request->jenis_kelamin;
-            $remaja->nik = $request->nik;
-            $remaja->tempat_lahir = $request->tempat_lahir;
-            $remaja->tanggal_lahir = $request->tanggal_lahir;
-            $remaja->no_hp = $request->no_hp;
-            $remaja->alamat = $request->alamat;
-            $remaja->save();
+    $user = User::findOrFail($remaja->user_id);
+    $user->username = $request->username;
+    $user->nama = $request->nama;
+    $user->save();
 
-            $user = User::findOrFail($remaja->user_id);
-            $user->username = $request->username;
-            $user->nama = $request->nama;
-            $user->save();
-
-            DB::commit();
-
-            return redirect()->route('remaja.index')->with('success', 'Data remaja berhasil diperbarui');
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return back()->withInput()->withErrors(['error' => 'Gagal memperbarui data remaja: ' . $e->getMessage()]);
-        }
-    }
+    return redirect()->route('remaja.index')->with('success', 'Data remaja berhasil diperbarui');
+}
 
     public function destroy($id)
     {

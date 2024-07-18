@@ -48,32 +48,34 @@ class ArtikelController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        // Validate request
-        $validatedData = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'gambar' => 'nullable|image|max:2048', // example max size
-        ]);
+{
+    // Validate request
+    $validatedData = $request->validate([
+        'judul' => 'required|string|max:255',
+        'deskripsi' => 'required|string',
+        'gambar' => 'nullable|image|max:2048', // example max size
+    ]);
 
-        // Find artikel
-        $artikel = Artikel::findOrFail($id);
+    // Find artikel
+    $artikel = Artikel::findOrFail($id);
 
-        // Handle file upload
-        if ($request->hasFile('gambar')) {
-            // Delete existing image if needed
+    // Handle file upload
+    if ($request->hasFile('gambar')) {
+        // Delete existing image if needed
+        if ($artikel->gambar) {
             Storage::disk('public')->delete($artikel->gambar);
-
-            // Store new image
-            $gambarPath = $request->file('gambar')->store('artikel_images', 'public');
-            $validatedData['gambar'] = $gambarPath;
         }
 
-        // Update artikel
-        $artikel->update($validatedData);
-
-        return redirect()->route('artikel.index')->with('success', 'Artikel berhasil diperbarui.');
+        // Store new image
+        $gambarPath = $request->file('gambar')->store('artikel_images', 'public');
+        $validatedData['gambar'] = $gambarPath;
     }
+
+    // Update artikel
+    $artikel->update($validatedData);
+
+    return redirect()->route('artikel.index')->with('success', 'Artikel berhasil diperbarui.');
+}
 
     public function destroy2($id)
     {
